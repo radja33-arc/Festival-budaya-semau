@@ -1,0 +1,27 @@
+{
+  "name": "Festival Budaya Semau — Hypermedia Streaming Adaptif",
+  "short_name": "Budaya Semau",
+  "description": "Produk hypermedia interaktif berbasis web responsif bertema Festival Budaya Pulau Semau, NTT, dengan simulasi ABR HLS/DASH, Semau-AI, dan Generative UI.",
+  "start_url": "./index3.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "lang": "id",
+  "categories": ["education", "entertainment", "culture"],
+  "icons": [
+    {
+      "src": "./assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

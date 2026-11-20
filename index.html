@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <title>Festival Budaya Semau — Hypermedia Streaming Adaptif HLS/DASH</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <style>
+        /* ==========================================================================
+           SISTEM DESAIN MANDIRI (OFFLINE-FIRST, WCAG 2.1 AA, FONT BODY >= 16PX)
+           ========================================================================== */
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #0b1120;
+            --border-color: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --accent-gold: #f59e0b;
+            --accent-gold-dark: #d97706;
+            --accent-sky: #38bdf8;
+            --accent-emerald: #34d399;
+            --accent-red: #f87171;
+            --base-font-size: 16px;
+            --sidebar-width: 250px;
+        }
+
+        /* Keadaan Generative UI: Mode Kontras Tinggi & Teks Besar */
+        body.genui-high-contrast {
+            --bg-primary: #000000;
+            --bg-secondary: #111111;
+            --bg-card: #050505;
+            --border-color: #f59e0b;
+            --text-primary: #ffffff;
+            --text-secondary: #fef08a;
+            --base-font-size: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: var(--base-font-size);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Fokus Papan Ketik WCAG 2.4.7 */
+        *:focus-visible {
+            outline: 3px solid var(--accent-sky);
+            outline-offset: 2px;
+        }
+
+        /* Target Sentuh Minimum 44x44px */
+        button, select, input, a.touch-target {
+            min-height: 44px;
+            min-width: 44px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        /* Skip Link WCAG 2.4.1 */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 1rem;
+            background: var(--accent-gold);
+            color: #000;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            border-radius: 0.5rem;
+            z-index: 1000;
+            text-decoration: none;
+        }
+        .skip-link:focus {
+            top: 1rem;
+        }
+
+        /* Top Banner Status PWA / Luring */
+        .pwa-banner {
+            background-color: #b45309;
+            color: #ffffff;
+            padding: 0.5rem 1.25rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+            font-size: 0.9rem;
+        }
+        .pwa-banner.offline-active {
+            background-color: #991b1b;
+        }
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Header Utama */
+        header.site-header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.25rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+        }
+        .brand-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.75rem;
+            background: linear-gradient(135deg, #d97706, #b91c1c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: #fff;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .brand-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+            line-height: 1.2;
+        }
+        .brand-sub {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Kontrol Generative UI Bar */
+        .genui-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .genui-badge {
+            font-size: 0.85rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid var(--accent-sky);
+            color: var(--accent-sky);
+            font-weight: 600;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb-bar {
+            background-color: rgba(11, 17, 32, 0.85);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.6rem 1.25rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .breadcrumb-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* ==========================================================================
+           TATA LETAK UTAMA: KONTEN DI KIRI & NAVIGASI NODE DI SEBELAH KANAN SAJA
+           ========================================================================== */
+        .workspace-layout {
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.25rem;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) var(--sidebar-width);
+            gap: 1.5rem;
+            flex: 1;
+            align-items: start;
+        }
+
+        body.genui-theater .workspace-layout {
+            grid-template-columns: minmax(0, 1fr) 210px;
+        }
+
+        /* Panel Navigasi Sisi Kanan */
+        aside.right-node-nav {
+            position: sticky;
+            top: 96px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 0.875rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+        }
+        .nav-heading {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-gold);
+            padding: 0.25rem 0.5rem 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .node-nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .node-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: 0.65rem;
+            border: 1px solid transparent;
+            background-color: transparent;
+            color: var(--text-secondary);
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .node-btn:hover {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+        .node-btn.active {
+            background-color: rgba(245, 158, 11, 0.18);
+            color: var(--accent-gold);
+            border-color: var(--accent-gold);
+        }
+        .node-icon {
+            width: 22px;
+            height: 22px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 960px) {
+            .workspace-layout {
+                grid-template-columns: 1fr;
+            }
+            aside.right-node-nav {
+                position: static;
+                order: -1;
+            }
+            .node-nav-list {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+                gap: 0.5rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .workspace-layout {
+                padding: 0.75rem;
+            }
+            .node-nav-list {
+                grid-template-columns: 1fr 1fr;
+            }
+            .node-btn {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        /* Komponen Konten */
+        main.content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            min-width: 0;
+        }
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+        }
+        .card-sub {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.15rem;
+        }
+        .hero-box {
+            background: radial-gradient(circle at top right, rgba(217, 119, 6, 0.25), transparent 60%),
+                        linear-gradient(135deg, #0b1120 0%, #1e1b4b 100%);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            border-radius: 1.25rem;
+            padding: 2rem;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+        }
+
+        /* Tipografi */
+        h1 { font-size: 1.75rem; font-weight: 800; line-height: 1.25; margin-bottom: 0.5rem; }
+        h2 { font-size: 1.35rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.5rem; color: var(--accent-gold); }
+        h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; color: #fff; }
+        p { color: var(--text-secondary); margin-bottom: 0.75rem; }
+
+        /* Tombol & Input */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.15rem;
+            border-radius: 0.65rem;
+            font-weight: 700;
+            border: 1px solid transparent;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.15s ease;
+        }
+        .btn-primary {
+            background-color: var(--accent-gold);
+            color: #090d16;
+        }
+        .btn-primary:hover {
+            background-color: #fbbf24;
+        }
+        .btn-secondary {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+        .btn-secondary:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+        .input-field {
+            width: 100%;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.65rem 0.9rem;
+            border-radius: 0.65rem;
+        }
+
+        /* Video & Media Asli HTML5 */
+        .video-frame {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 0.875rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .video-frame video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .caption-overlay {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 0.5rem 0.875rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            pointer-events: none;
+        }
+
+        /* Galeri Foto Kartu */
+        .gallery-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.875rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Tabel Responsif */
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        th, td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            background-color: var(--bg-secondary);
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+
+        ul.materi-list {
+            padding-left: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            color: var(--text-secondary);
+        }
+        ul.materi-list li strong {
+            color: var(--text-primary);
+        }
+
+        .hidden { display: none !important; }
+
+        footer.site-footer {
+            background-color: var(--bg-card);
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">Lompati ke Konten Utama</a>
+
+    <!-- BANNER STATUS PWA & OPERASI LURING -->
+    <div id="pwa-banner" class="pwa-banner" role="region" aria-label="Status Koneksi dan Mode Luring">
+        <div class="status-pill">
+            <span id="conn-icon" aria-hidden="true">🟢</span>
+            <span id="conn-text">Status Daring: Terhubung (Service Worker & Precache Aset Lokal Aktif)</span>
+        </div>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <button type="button" class="btn btn-secondary" onclick="toggleOfflineSimulation()" id="btn-offline-toggle">
+                🔌 Uji Simulasi Mode Offline
+            </button>
+        </div>
+    </div>
+
+    <!-- HEADER UTAMA -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="brand">
+                <div class="brand-logo" aria-hidden="true">FBS</div>
+                <div>
+                    <div class="brand-title">FESTIVAL BUDAYA SEMAU</div>
+                    <div class="brand-sub">Hypermedia Streaming Adaptif HLS/DASH — Kelompok 11 ITAF Kupang</div>
+                </div>
+            </div>
+
+            <!-- KONTROL GENERATIVE UI RUNTIME -->
+            <div class="genui-controls" aria-label="Kontrol Antarmuka Adaptif Generative UI">
+                <span class="genui-badge" id="genui-state-label">✨ GenUI: Mode Standar (720p)</span>
+                <select id="genui-mode-select" onchange="applyGenerativeUI(this.value)" aria-label="Pilih Keadaan Generative UI" class="input-field" style="width:auto;">
+                    <option value="standard">UI Standar (Seimbang)</option>
+                    <option value="data-saver">UI Hemat Data (360p Ringkas)</option>
+                    <option value="theater">UI Fokus Pemutar (Theater)</option>
+                    <option value="high-contrast">UI Aksesibel (Kontras Tinggi + Teks Besar)</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- BREADCRUMB & NAVIGASI KEMBALI -->
+    <nav class="breadcrumb-bar" aria-label="Jejak Navigasi">
+        <div class="breadcrumb-inner">
+            <div>
+                <span>Beranda</span> / <strong id="breadcrumb-current" style="color:var(--accent-gold);">BERANDA</strong>
+            </div>
+            <div style="display:flex; gap:0.5rem;">
+                <button type="button" class="btn btn-secondary" style="padding:0.35rem 0.75rem; min-height:36px;" onclick="goBackNode()">
+                    ⬅️ Kembali ke Node Sebelumnya
+                </button>
+                <button type="button" class="btn btn-secondary" style="padding:0.35rem 0.75rem; min-height:36px;" onclick="switchNode('sitemap')">
+                    🗺️ Peta Situs (10 Node)
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- LAYOUT UTAMA -->
+    <div class="workspace-layout">
+
+        <!-- AREA KONTEN UTAMA -->
+        <main id="main-content" class="content-area" tabindex="-1">
+
+            <!-- PENCARIAN KONTEN LOKAL -->
+            <section class="card" aria-label="Pencarian Konten Lokal">
+                <form onsubmit="handleLocalSearch(event)" style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                    <label for="search-input" class="hidden">Cari konten hypermedia</label>
+                    <input type="text" id="search-input" class="input-field" style="flex:1; min-width:200px;" placeholder="Cari video live streaming, galeri foto, podkes, AI, atau SUS...">
+                    <button type="submit" class="btn btn-primary">🔍 Cari Konten</button>
+                </form>
+                <div id="search-results" class="hidden card-sub" style="margin-top:0.875rem;"></div>
+            </section>
+
+            <!-- NODE 1: BERANDA -->
+            <section id="node-home" class="node-page">
+                <div class="hero-box">
+                    <span class="genui-badge" style="margin-bottom:0.75rem; display:inline-block;">🌴 Kearifan Lokal Pulau Semau, Kabupaten Kupang, NTT</span>
+                    <h1>Festival Budaya Semau 2026: Siaran Adaptif HLS/DASH</h1>
+                    <p>
+                        Platform hypermedia interaktif berbasis web responsif yang menyiarkan dan mendokumentasikan kekayaan budaya Pulau Semau dengan pemutar video asli, galeri arsip pariwisata, dan modul pembelajaran multimedia.
+                    </p>
+                    <div style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.25rem;">
+                        <button type="button" class="btn btn-primary" onclick="switchNode('streaming')">📺 Buka Pemutar Live Streaming</button>
+                        <button type="button" class="btn btn-secondary" onclick="switchNode('galeri')">🖼️ Lihat Galeri & Arsip Budaya</button>
+                        <button type="button" class="btn btn-secondary" onclick="switchNode('sitemap')">🗺️ Jelajahi 10 Node Situs</button>
+                    </div>
+                </div>
+
+                <div class="grid-3" style="margin-top:1.25rem;">
+                    <div class="card-sub">
+                        <h3>⚡ Pemutar Video Asli (HTML5)</h3>
+                        <p>Mendukung berkas video MP4/WebM dan stream HLS nyata untuk siaran langsung panggung budaya Semau.</p>
+                    </div>
+                    <div class="card-sub">
+                        <h3>🖼️ Galeri Pariwisata & Arsip</h3>
+                        <p>Koleksi foto eksklusif keindahan Pantai Otan, tenun ikat, dan instrumen Sasando Pulau Semau.</p>
+                    </div>
+                    <div class="card-sub">
+                        <h3>♿ Aksesibel WCAG 2.1 AA</h3>
+                        <p>Dilengkapi transkrip audio, teks takarir, navigasi papan ketik, dan kontras warna minimum 4,5:1.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NODE 2: MATERI LENGKAP -->
+            <section id="node-materi" class="node-page card hidden">
+                <h1>Modul Materi Pembelajaran: Multimedia & Live Streaming</h1>
+                <p>Garis besar materi perkuliahan WPIF-4139 Multimedia (ITAF Kupang) dan arsitektur teknis siaran langsung Festival Budaya Semau.</p>
+
+                <div class="card-sub" style="margin-top:1.25rem;">
+                    <h2>A. Arsitektur & Pipeline Live Streaming (HLS / DASH)</h2>
+                    <p>Alur pengiriman video dari lokasi acara budaya di Pantai Otan menuju peramban penonton secara waktu nyata:</p>
+                    
+                    <div class="grid-2" style="margin-top:0.75rem;">
+                        <div>
+                            <h3>1. Protokol Ingesti Lapangan</h3>
+                            <ul class="materi-list">
+                                <li><strong>RTMP & SRT:</strong> Mengirim aliran kamera lapangan ke server peladen media relay.</li>
+                                <li><strong>Segmentasi Kecil:</strong> Video dipecah menjadi berkas segmen 2–6 detik dengan indeks daftar putar <code>.m3u8</code>.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>2. Adaptive Bitrate (ABR)</h3>
+                            <ul class="materi-list">
+                                <li><strong>Manajemen Buffer:</strong> Pemutar klien menjaga cadangan 10–15 detik di memori lokal.</li>
+                                <li><strong>Pemilihan Rendisi:</strong> Mengatur kualitas otomatis (1080p, 720p, 480p, 360p).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NODE 3: VIDEO INTERAKTIF & PODKES AUDIO -->
+            <section id="node-media-interaktif" class="node-page card hidden">
+                <h1>Video Interaktif & Podkes Audio Budaya Semau</h1>
+                <p>Pemutar video interaktif asli (HTML5) yang memunculkan kuis di detik ke-10 serta pemutar audio podcast budaya.</p>
+
+                <div class="card-sub" style="margin-top:1rem;">
+                    <h2>🎬 Pemutar Video Interaktif (Dilengkapi Kuis Otomatis)</h2>
+                    <div class="video-frame" style="margin:0.75rem 0;">
+                        <video id="interactive-video-element" controls ontimeupdate="checkInteractiveTime(this)">
+                            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                            Peramban Anda tidak mendukung elemen video HTML5.
+                        </video>
+
+                        <div id="interactive-quiz-overlay" class="hidden" style="position:absolute; inset:0; background:rgba(11,17,32,0.95); padding:1.5rem; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; z-index:10;">
+                            <h3 style="color:var(--accent-gold);">Kuis Interaktif (Detik ke-10)</h3>
+                            <p>Mengapa pemutar HLS/DASH memecah video menjadi segmen-segmen kecil (2–6 detik)?</p>
+                            <div style="display:flex; flex-wrap:wrap; gap:0.75rem; justify-content:center; margin-top:0.5rem;">
+                                <button type="button" class="btn btn-primary" onclick="answerQuiz(true)">A. Agar mudah beradaptasi dengan kecepatan ABR</button>
+                                <button type="button" class="btn btn-secondary" onclick="answerQuiz(false)">B. Untuk memperbesar ukuran file server</button>
+                            </div>
+                            <p id="quiz-feedback" style="margin-top:0.75rem; font-weight:700;"></p>
+                        </div>
+                        <div class="caption-overlay">[Takarir ID]: Penjelasan arsitektur streaming interaktif Festival Budaya Semau.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NODE 4: PEMUTAR LIVE STREAMING ASLI -->
+            <section id="node-streaming" class="node-page card hidden">
+                <h1>Pemutar Live Streaming Panggung Utama Semau</h1>
+                <p>Siaran langsung menggunakan pemutar video HTML5 asli.</p>
+
+                <div class="grid-2" style="margin-top:1rem;">
+                    <div>
+                        <div class="video-frame">
+                            <video id="live-stream-video" controls autoplay muted>
+                                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
+                                Peramban Anda tidak mendukung pemutar video siaran langsung.
+                            </video>
+                            <div class="caption-overlay">
+                                🔴 LIVE • Panggung Utama Pantai Otan, Pulau Semau
+                            </div>
+                        </div>
+                        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:0.75rem; margin-top:0.75rem;">
+                            <span class="genui-badge" id="player-status-badge">Status: Siaran Aktif (Zero Stall Buffer)</span>
+                            <div style="display:flex; align-items:center; gap:0.5rem;">
+                                <label for="rendition-select">Kualitas:</label>
+                                <select id="rendition-select" onchange="changeRendition(this.value)" class="input-field" style="width:auto;">
+                                    <option value="auto" selected>Auto ABR (Adaptif)</option>
+                                    <option value="1080p">1080p Full HD</option>
+                                    <option value="720p">720p HD</option>
+                                    <option value="360p">360p Hemat Data</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="stream-side-panel" class="card-sub">
+                        <h3>📊 Telemetri Jaringan & Transkrip Live</h3>
+                        <p><strong>Throughput Rata-Rata:</strong> <span style="color:var(--accent-emerald);">4.85 Mbps</span></p>
+                        <p><strong>Kesehatan Buffer:</strong> <span style="color:var(--accent-sky);">12.4 Detik</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NODE 5: KATALOG ACARA -->
+            <section id="node-katalog" class="node-page card hidden">
+                <h1>Katalog Pertunjukan Festival Budaya Semau</h1>
+                <p>Daftar mata acara yang telah mendapatkan izin perekaman dan verifikasi narasumber budaya setempat.</p>
+                <div class="grid-3" style="margin-top:1rem;">
+                    <div class="card-sub">
+                        <span class="genui-badge">Tarian Adat</span>
+                        <h3 style="margin-top:0.5rem;">Tarian Perang Helatoba</h3>
+                        <p>Tarian penyambutan dan ketangguhan masyarakat Suku Helong di Pulau Semau.</p>
+                        <button type="button" class="btn btn-primary" onclick="switchNode('streaming')">▶️ Tonton Siaran</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NODE 6: SIMULATOR ABR & SEMAU-AI -->
+            <section id="node-abr-ai" class="node-page card hidden">
+                <h1>Simulator ABR & Semau-AI (Asisten Cerdas Lokal)</h1>
+                <div class="grid-2" style="margin-top:1rem;">
+                    <div class="card-sub">
+                        <h2>📊 Simulator ABR & Throughput</h2>
+                        <label for="sim-bandwidth" style="display:block; margin-top:0.5rem;"><strong>Simulasi Bandwidth:</strong> <span id="sim-bw-val" style="color:var(--accent-gold);">5.0</span> Mbps</label>
+                        <input type="range" id="sim-bandwidth" min="0.5" max="10.0" step="0.5" value="5.0" oninput="updateSimBandwidth(this.value)" style="width:100%; margin:0.75rem 0;">
+                        <p><strong>Status Jaringan:</strong> <span id="sim-net-status">✅ Stabil</span></p>
+                    </div>
+                    <div class="card-sub" style="display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <h2>🤖 Semau-AI (Asisten Lokal)</h2>
+                            <div id="chat-messages" style="height:150px; overflow-y:auto; background:var(--bg-primary); padding:0.75rem; border-radius:0.5rem; border:1px solid var(--border-color); font-size:0.9rem; display:flex; flex-direction:column; gap:0.5rem; margin-bottom:0.75rem;">
+                                <div><strong style="color:var(--accent-gold);">🤖 AI:</strong> Halo! Ada yang ingin ditanyakan?</div>
+                            </div>
+                        </div>
+                        <form onsubmit="handleAiChat(event)" style="display:flex; gap:0.5rem;">
+                            <label for="ai-chat-input" class="hidden">Tanya AI</label>
+                            <input type="text" id="ai-chat-input" class="input-field" placeholder="Ketik pertanyaan...">
+                            <button type="submit" class="btn btn-primary">Kirim</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NODE 7: GALERI & ARSIP (DENGAN SLIDER & ATRIBUSI) -->
+            <section id="node-galeri" class="node-page card hidden">
+                <h1>Galeri & Arsip Festival Budaya Semau</h1>
+                <p>Dokumentasi foto pariwisata, video tarian, dan alunan musik tradisional lengkap dengan informasi atribusi lisensi aset budaya (UU No. 28/2014).</p>
+
+                <!-- KONTROL PENGATUR RASIO GAMBAR -->
+                <div style="display:flex; gap:0.5rem; align-items:center; margin:1rem 0; flex-wrap:wrap;">
+                    <span style="font-size:0.9rem; font-weight:700; color:var(--accent-gold);">Rasio Tampilan Foto:</span>
+                    <button type="button" class="btn btn-secondary" style="padding:0.35rem 0.75rem; min-height:36px;" onclick="changeGalleryRatio('1-1')">Rasio 1:1 (Kotak)</button>
+                    <button type="button" class="btn btn-secondary" style="padding:0.35rem 0.75rem; min-height:36px;" onclick="changeGalleryRatio('4-3')">Rasio 4:3 (Standar)</button>
+                    <button type="button" class="btn btn-secondary" style="padding:0.35rem 0.75rem; min-height:36px;" onclick="changeGalleryRatio('16-9')">Rasio 16:9 (Lebar)</button>
+                </div>
+
+                <!-- 1. SLIDER FOTO PARIWISATA -->
+                <div class="card-sub" style="margin-top:1.25rem;">
+                    <h2>🖼️ Galeri Foto Pariwisata (6 Foto)</h2>
+                    <div style="position:relative; width:100%; max-width:600px; margin:0.75rem auto; text-align:center;">
+                        <div id="photo-slider-container" style="width:100%; aspect-ratio:4/3; background:#000; border-radius:0.75rem; overflow:hidden; border:1px solid var(--border-color); display:flex; align-items:center; justify-content:center;">
+                            <img id="active-photo-img" src="assets/icons/icon-192.JPG" alt="Foto Pariwisata Semau" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <p id="photo-caption" style="margin-top:0.5rem; font-weight:700; color:var(--text-primary);">1. Pantai Otan & Pasir Putih (1 / 6)</p>
+                        
+                        <!-- ATRIBUSI RAPI DI BAWAH FOTO -->
+                        <div style="background:var(--bg-primary); padding:0.6rem; border-radius:0.5rem; margin-top:0.5rem; font-size:0.85rem; border:1px solid var(--border-color); text-align:left;">
+                            <p style="margin:0; color:var(--text-secondary);"><strong>Pencipta / Sumber:</strong> <span id="photo-creator">Marlinda Lake</span></p>
+                            <p style="margin:0; color:var(--accent-emerald);"><strong>Lisensi:</strong> <span id="photo-license">Youtube</span></p>
+                        </div>
+
+                        <!-- TOMBOL LIHAT MAPS PANTAI LIMAN -->
+                        <div style="margin-top:0.75rem; margin-bottom:0.75rem;">
+                            <a id="photo-maps-btn" href="https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z" target="_blank" class="btn btn-secondary" style="width:100%; text-decoration:none; font-size:0.9rem; display:block; text-align:center;">
+                                📍 Buka Peta Lokasi di Google Maps (Pantai Liman)
+                            </a>
+                        </div>
+
+                        <!-- TOMBOL NAVIGASI SLIDER -->
+                        <div style="display:flex; justify-content:space-between; margin-top:0.75rem;">
+                            <button type="button" class="btn btn-primary" onclick="prevPhoto()">⬅️ Foto Sebelumnya</button>
+                            <button type="button" class="btn btn-primary" onclick="nextPhoto()">Foto Selanjutnya ➡️</button>
+                        </div>
+                <!-- 2. SLIDER VIDEO TARIAN -->
+                <div class="card-sub" style="margin-top:2rem;">
+                    <h2>🎬 Arsip Video Tarian Adat (3 Video)</h2>
+                    <div style="position:relative; width:100%; max-width:600px; margin:0.75rem auto; text-align:center;">
+                        <div id="video-slider-container" style="width:100%; aspect-ratio:16/9; background:#000; border-radius:0.75rem; overflow:hidden; border:1px solid var(--border-color);">
+                            <video id="active-video-player" controls style="width:100%; height:100%; object-fit:cover;">
+                                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                                Peramban Anda tidak mendukung pemutar video.
+                            </video>
+                        </div>
+                        <p id="video-caption" style="margin-top:0.5rem; font-weight:700; color:var(--text-primary);">1. Tarian Perang Helatoba (1 / 3)</p>
+                        
+                        <div style="background:var(--bg-primary); padding:0.6rem; border-radius:0.5rem; margin-top:0.5rem; font-size:0.85rem; border:1px solid var(--border-color); text-align:left;">
+                            <p style="margin:0; color:var(--text-secondary);"><strong>Pencipta / Sumber:</strong> Sanggar Seni Budaya Helong Kupang</p>
+                            <p style="margin:0; color:var(--accent-emerald);"><strong>Lisensi:</strong> Hak Cipta Edukatif / Izin Tokoh Adat Setempat</p>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-top:0.75rem;">
+                            <button type="button" class="btn btn-primary" onclick="prevVideo()">⬅️ Video Sebelumnya</button>
+                            <button type="button" class="btn btn-primary" onclick="nextVideo()">Video Selanjutnya ➡️</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. SLIDER MUSIK TRADISIONAL -->
+                <div class="card-sub" style="margin-top:2rem;">
+                    <h2>🎵 Alunan Musik Tradisional (2 Musik)</h2>
+                    <div style="position:relative; width:100%; max-width:600px; margin:0.75rem auto; text-align:center;">
+                        <div style="background:var(--bg-primary); padding:1.25rem; border-radius:0.75rem; border:1px solid var(--border-color); text-align:left;">
+                            <h3 id="music-title" style="color:var(--accent-gold); margin-bottom:0.5rem;">1. Ansambel Sasando Klasik (1 / 2)</h3>
+                            <audio id="active-audio-player" controls style="width:100%; margin-bottom:0.75rem;">
+                                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                                Peramban Anda tidak mendukung audio.
+                            </audio>
+                            <div style="background:var(--bg-card); padding:0.6rem; border-radius:0.5rem; font-size:0.85rem; border:1px solid var(--border-color);">
+                                <p style="margin:0; color:var(--text-secondary);"><strong>Pencipta / Sumber:</strong> Maestro Sasando Rote-Kupang (Domain Publik / CC BY 4.0)</p>
+                                <p style="margin:0; color:var(--accent-emerald);"><strong>Lisensi:</strong> Atribusi Terbuka untuk Pembelajaran Multimedia</p>
+                            </div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-top:0.75rem;">
+                            <button type="button" class="btn btn-secondary" onclick="prevMusic()">⬅️ Musik Sebelumnya</button>
+                            <button type="button" class="btn btn-secondary" onclick="nextMusic()">Musik Selanjutnya ➡️</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NODE 8: LAPORAN -->
+            <section id="node-laporan" class="node-page card hidden">
+                <h1>Dokumentasi Proyek & Laporan Akhir (PPT & Word)</h1>
+                <div class="grid-2" style="margin-top:1rem;">
+                    <div class="card-sub">
+                        <h3>📊 Materi Presentasi (.PPTX)</h3>
+                        <button type="button" class="btn btn-primary" onclick="openLaporanPreview('ppt')">👁️ Pratinjau Slide</button>
+                    </div>
+                    <div class="card-sub">
+                        <h3>📝 Laporan Teknis (.DOCX)</h3>
+                        <button type="button" class="btn btn-secondary" onclick="openLaporanPreview('word')">📄 Pratinjau Laporan</button>
+                    </div>
+                </div>
+                <div id="laporan-preview-box" class="hidden card-sub" style="margin-top:1rem;"></div>
+            </section>
+
+            <!-- NODE 9: EVALUASI SUS -->
+            <section id="node-sus" class="node-page card hidden">
+                <h1>Kuesioner Evaluasi System Usability Scale (SUS)</h1>
+                <form onsubmit="calculateSUS(event)" style="margin-top:1rem;">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr><th>No</th><th>Pernyataan Evaluasi Usability</th><th>Skor (1–5)</th></tr>
+                            </thead>
+                            <tbody id="sus-questions-body"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top:1rem; display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center;">
+                        <button type="submit" class="btn btn-primary">🧮 Hitung Skor SUS</button>
+                        <div id="sus-result-box" style="font-weight:700; color:var(--accent-emerald);"></div>
+                    </div>
+                </form>
+            </section>
+
+            <!-- NODE 10: PETA SITUS -->
+            <section id="node-sitemap" class="node-page card hidden">
+                <h1>Peta Situs Komposit (10 Node) & Atribusi Hak Cipta</h1>
+                <div class="grid-2" style="margin-top:1rem;">
+                    <div class="card-sub">
+                        <h3>🕸️ Jaringan 10 Node Hypermedia</h3>
+                        <ul id="sitemap-links-list" style="padding-left:1.25rem; display:flex; flex-direction:column; gap:0.4rem;"></ul>
+                    </div>
+                    <div class="card-sub">
+                        <h3>⚖️ Matriks Atribusi & Izin Budaya</h3>
+                        <ul class="materi-list">
+                            <li><strong>Ikon UI:</strong> Kelompok 11 (CC BY-SA 4.0).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- NAVIGASI KANAN -->
+        <aside class="right-node-nav" aria-label="Navigasi Simpul Hypermedia">
+            <div class="nav-heading"><span aria-hidden="true">🧭</span><span>Simpul Navigasi (10 Node)</span></div>
+            <nav id="right-node-list" class="node-nav-list"></nav>
+        </aside>
+
+    </div>
+
+    <footer class="site-footer">
+        <p><strong>Kelompok 11 — WPIF-4139 Multimedia (Institut Teknologi Alberth Foenay Kupang)</strong></p>
+    </footer>
+
+    <script>
+        /* ==========================================================================
+           PENGATURAN DATA FOTO, VIDEO, DAN MUSIK (POSISI DI PALING AWAL SKRIP)
+           ========================================================================== */
+
+        // 1. Data 6 Foto Pariwisata & Atribusinya (Bisa diubah dengan cepat di sini)
+        const photoData = [
+            { 
+                src: 'assets/icons/icon-192.JPG', 
+                title: '1. Pantai Otan & Pasir Putih', 
+                creator: 'Marlinda Lake', 
+                license: 'Youtube',
+                mapsUrl: 'https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z' 
+            },
+            { 
+                src: 'assets/icons/icon-193.JPG', 
+                title: '2. Kawasan Budaya Suku Helong', 
+                creator: 'Wiliyy Bani', 
+                license: 'Facebook',
+                mapsUrl: 'https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z' 
+            },
+            { 
+                src: 'assets/icons/foto-ketiga.jpg', 
+                title: '3. Panorama Pesisir Pulau Semau', 
+                creator: 'Nama Pencipta Foto 3', 
+                license: 'Sumber / Lisensi Foto 3',
+                mapsUrl: 'https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z' 
+            },
+            { 
+                src: 'assets/icons/icon-192.JPG', 
+                title: '4. Perkampungan Tradisional Wae Rebo', 
+                creator: 'Komunitas Adat Manggarai', 
+                license: 'Izin Penelitian Akademik',
+                mapsUrl: 'https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z' 
+            },
+            { 
+                src: 'assets/icons/icon-192.JPG', 
+                title: '5. Kerajinan Tenun Ikat Lokal', 
+                creator: 'Pengrajin Tenun Ikat Semau', 
+                license: 'UU No. 28/2014',
+                mapsUrl: 'https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z' 
+            },
+            { 
+                src: 'assets/icons/icon-192.JPG', 
+                title: '6. Senja di Pelabuhan Semau', 
+                creator: 'Tim Multimedia Kelompok 11', 
+                license: 'CC BY-SA 4.0',
+                mapsUrl: 'https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z' 
+            }
+        ];
+
+        // 2. Data 3 Arsip Video Tarian
+        const videoData = [
+            { src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', title: '1. Tarian Perang Helatoba' },
+            { src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', title: '2. Tarian Likurai Tradisional' },
+            { src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', title: '3. Tarian Jai Massal' }
+        ];
+
+        // 3. Data 2 Musik Tradisional
+        const musicData = [
+            { src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', title: '1. Ansambel Sasando Klasik' },
+            { src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', title: '2. Tabuhan Gong Perunggu Kupang' }
+        ];
+
+
+        /* ==========================================================================
+           LOGIKA NAVIGASI 10 NODE & PENDUKUNG APLIKASI
+           ========================================================================== */
+        const NAVIGATION_NODES = [
+            { id: 'home', label: 'Beranda', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>' },
+            { id: 'materi', label: 'Materi Lengkap', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>' },
+            { id: 'media-interaktif', label: 'Video & Podkes', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>' },
+            { id: 'streaming', label: 'Pemutar Streaming', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>' },
+            { id: 'katalog', label: 'Katalog Acara', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>' },
+            { id: 'abr-ai', label: 'Simulator ABR & AI', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' },
+            { id: 'galeri', label: 'Galeri', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>' },
+            { id: 'laporan', label: 'Laporan Proyek', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' },
+            { id: 'sus', label: 'Evaluasi SUS', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>' },
+            { id: 'sitemap', label: 'Peta Situs', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>' }
+        ];
+
+        let navigationHistory = ['home'];
+        let isSimulatedOffline = false;
+        let quizTriggered = false;
+        let currentPhotoIdx = 0;
+        let currentVideoIdx = 0;
+        let currentMusicIdx = 0;
+
+        function initNavigation() {
+            const rightNav = document.getElementById('right-node-list');
+            const sitemapList = document.getElementById('sitemap-links-list');
+            rightNav.innerHTML = '';
+            sitemapList.innerHTML = '';
+
+            NAVIGATION_NODES.forEach((node, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.id = `node-btn-${node.id}`;
+                btn.className = idx === 0 ? 'node-btn active' : 'node-btn';
+                btn.setAttribute('aria-current', idx === 0 ? 'page' : 'false');
+                btn.onclick = () => switchNode(node.id);
+                btn.innerHTML = `<span class="node-icon" aria-hidden="true">${node.icon}</span><span>${node.label}</span>`;
+                rightNav.appendChild(btn);
+
+                const li = document.createElement('li');
+                li.innerHTML = `<button type="button" class="btn btn-secondary" style="padding:0.35rem 0.75rem; min-height:38px;" onclick="switchNode('${node.id}')">${node.label}</button>`;
+                sitemapList.appendChild(li);
+            });
+        }
+
+        function switchNode(nodeId) {
+            document.querySelectorAll('.node-page').forEach(sec => sec.classList.add('hidden'));
+            const target = document.getElementById('node-' + nodeId);
+            if (target) {
+                target.classList.remove('hidden');
+                const found = NAVIGATION_NODES.find(n => n.id === nodeId);
+                document.getElementById('breadcrumb-current').innerText = (found ? found.label : nodeId).toUpperCase();
+                if (navigationHistory[navigationHistory.length - 1] !== nodeId) {
+                    navigationHistory.push(nodeId);
+                }
+            }
+
+            NAVIGATION_NODES.forEach(n => {
+                const btn = document.getElementById(`node-btn-${n.id}`);
+                if (btn) {
+                    const isActive = n.id === nodeId;
+                    btn.classList.toggle('active', isActive);
+                    btn.setAttribute('aria-current', isActive ? 'page' : 'false');
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goBackNode() {
+            if (navigationHistory.length > 1) {
+                navigationHistory.pop();
+                const prev = navigationHistory[navigationHistory.length - 1];
+                switchNode(prev);
+            } else {
+                switchNode('home');
+            }
+        }
+
+        function applyGenerativeUI(mode) {
+            document.body.classList.remove('genui-theater', 'genui-high-contrast');
+            const label = document.getElementById('genui-state-label');
+            const sidePanel = document.getElementById('stream-side-panel');
+            const selectEl = document.getElementById('genui-mode-select');
+            if (selectEl) selectEl.value = mode;
+
+            if (mode === 'data-saver') {
+                label.innerText = '📉 GenUI: Mode Hemat Data (360p Ringkas)';
+            } else if (mode === 'theater') {
+                document.body.classList.add('genui-theater');
+                label.innerText = '🎬 GenUI: Mode Fokus Pemutar (Theater)';
+            } else if (mode === 'high-contrast') {
+                document.body.classList.add('genui-high-contrast');
+                label.innerText = '♿ GenUI: Kontras Tinggi & Teks 18px';
+            } else {
+                label.innerText = '✨ GenUI: Mode Standar (720p)';
+            }
+        }
+
+        if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
+
+        function toggleOfflineSimulation() {
+            isSimulatedOffline = !isSimulatedOffline;
+            const banner = document.getElementById('pwa-banner');
+            const icon = document.getElementById('conn-icon');
+            const text = document.getElementById('conn-text');
+            const btn = document.getElementById('btn-offline-toggle');
+
+            if (isSimulatedOffline) {
+                banner.classList.add('offline-active');
+                icon.innerText = '📴';
+                text.innerText = 'Mode Luring Aktif: Memutar Berkas Lokal';
+                btn.innerText = '🟢 Kembali ke Mode Daring';
+                applyGenerativeUI('data-saver');
+            } else {
+                banner.classList.remove('offline-active');
+                icon.innerText = '🟢';
+                text.innerText = 'Status Daring: Terhubung';
+                btn.innerText = '🔌 Uji Simulasi Mode Offline';
+                applyGenerativeUI('standard');
+            }
+        }
+
+        const AI_INTENTS = [
+            { keywords: ['halo', 'hai', 'selamat'], reply: 'Halo! Selamat datang di Festival Budaya Semau.', action: null },
+            { keywords: ['jadwal', 'acara'], reply: 'Jadwal Panggung Utama Pantai Otan...', action: () => switchNode('katalog') }
+        ];
+
+        function handleAiChat(e) {
+            e.preventDefault();
+            const input = document.getElementById('ai-chat-input');
+            const raw = input.value.trim();
+            if (!raw) return;
+            const chatBox = document.getElementById('chat-messages');
+            chatBox.innerHTML += `<div><strong style="color:var(--accent-sky);">👤 Anda:</strong> ${raw}</div>`;
+            input.value = '';
+            chatBox.innerHTML += `<div><strong style="color:var(--accent-gold);">🤖 Semau-AI:</strong> Halo, informasi tersebut tersedia di menu terkait.</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function checkInteractiveTime(videoEl) {
+            if (videoEl.currentTime >= 10 && !quizTriggered) {
+                quizTriggered = true;
+                videoEl.pause();
+                document.getElementById('interactive-quiz-overlay').classList.remove('hidden');
+            }
+        }
+
+        function answerQuiz(isCorrect) {
+            const fb = document.getElementById('quiz-feedback');
+            const videoEl = document.getElementById('interactive-video-element');
+            fb.innerText = isCorrect ? '✅ Benar!' : '❌ Kurang tepat.';
+            setTimeout(() => {
+                document.getElementById('interactive-quiz-overlay').classList.add('hidden');
+                fb.innerText = '';
+                if (videoEl) videoEl.play();
+            }, 2000);
+        }
+
+        function updateSimBandwidth(val) {
+            document.getElementById('sim-bw-val').innerText = val;
+        }
+
+        function handleLocalSearch(e) {
+            e.preventDefault();
+            const q = document.getElementById('search-input').value.trim().toLowerCase();
+            const box = document.getElementById('search-results');
+            if (!q) { box.classList.add('hidden'); return; }
+            box.classList.remove('hidden');
+            box.innerHTML = `Hasil pencarian untuk "${q}": <button type="button" class="btn btn-secondary" onclick="switchNode('galeri')">Buka Galeri</button>`;
+        }
+
+        function openLaporanPreview(type) {
+            const box = document.getElementById('laporan-preview-box');
+            box.classList.remove('hidden');
+            box.innerHTML = type === 'ppt' ? '<h3>Pratinjau Slide Presentasi</h3>' : '<h3>Pratinjau Laporan Teknis</h3>';
+        }
+
+        const SUS_ITEMS = [
+            'Saya berpikir akan sering menggunakan sistem ini.',
+            'Saya merasa sistem ini terlalu rumit tanpa perlu.',
+            'Saya merasa sistem ini mudah digunakan.',
+            'Saya membutuhkan bantuan orang yang ahli secara teknis.',
+            'Saya merasa fungsi-fungsi dalam sistem ini terintegrasi dengan baik.',
+            'Saya merasa terlalu banyak ketidakkonsistenan.',
+            'Saya membayangkan kebanyakan orang akan belajar dengan cepat.',
+            'Saya merasa sistem ini sangat merepotkan.',
+            'Saya merasa sangat percaya diri menggunakan sistem ini.',
+            'Saya perlu mempelajari banyak hal sebelum dapat mulai.'
+        ];
+
+        function initSUSTable() {
+            const tbody = document.getElementById('sus-questions-body');
+            tbody.innerHTML = SUS_ITEMS.map((text, idx) => `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td>${text}</td>
+                    <td>
+                        <select id="sus-q-${idx + 1}" class="input-field" style="width:90px;">
+                            <option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function calculateSUS(e) {
+            e.preventDefault();
+            let oddSum = 0, evenSum = 0;
+            for (let i = 1; i <= 10; i++) {
+                const val = parseInt(document.getElementById(`sus-q-${i}`).value, 10);
+                if (i % 2 === 1) oddSum += (val - 1);
+                else evenSum += (5 - val);
+            }
+            const score = ((oddSum + evenSum) * 2.5).toFixed(1);
+            document.getElementById('sus-result-box').innerText = `✅ Skor SUS Anda: ${score}`;
+        }
+
+        // Navigasi Slider Foto & Atribusi Dinamis
+        function updatePhoto() {
+            const item = photoData[currentPhotoIdx];
+            const imgEl = document.getElementById('active-photo-img');
+            const capEl = document.getElementById('photo-caption');
+            const creatorEl = document.getElementById('photo-creator');
+            const licenseEl = document.getElementById('photo-license');
+            const mapsBtnEl = document.getElementById('photo-maps-btn'); // Elemen tombol maps
+
+            if (imgEl && capEl) {
+                imgEl.src = item.src;
+                capEl.innerText = `${item.title} (${currentPhotoIdx + 1} / ${photoData.length})`;
+                if (creatorEl) creatorEl.innerText = item.creator;
+                if (licenseEl) licenseEl.innerText = item.license;
+                
+                // Memperbarui tautan maps secara dinamis
+                if (mapsBtnEl && item.mapsUrl) {
+                    mapsBtnEl.href = item.mapsUrl;
+                }
+            }
+        }
+        function nextPhoto() { currentPhotoIdx = (currentPhotoIdx + 1) % photoData.length; updatePhoto(); }
+        function prevPhoto() { currentPhotoIdx = (currentPhotoIdx - 1 + photoData.length) % photoData.length; updatePhoto(); }
+
+        function changeGalleryRatio(ratio) {
+            const container = document.getElementById('photo-slider-container');
+            if (!container) return;
+            if (ratio === '1-1') container.style.aspectRatio = '1 / 1';
+            else if (ratio === '4-3') container.style.aspectRatio = '4 / 3';
+            else if (ratio === '16-9') container.style.aspectRatio = '16 / 9';
+        }
+
+        function updateVideo() {
+            const item = videoData[currentVideoIdx];
+            const videoEl = document.getElementById('active-video-player');
+            const capEl = document.getElementById('video-caption');
+            if (videoEl && capEl) {
+                videoEl.src = item.src;
+                capEl.innerText = `${item.title} (${currentVideoIdx + 1} / ${videoData.length})`;
+                videoEl.load();
+            }
+        }
+        function nextVideo() { currentVideoIdx = (currentVideoIdx + 1) % videoData.length; updateVideo(); }
+        function prevVideo() { currentVideoIdx = (currentVideoIdx - 1 + videoData.length) % videoData.length; updateVideo(); }
+
+        function updateMusic() {
+            const item = musicData[currentMusicIdx];
+            const audioEl = document.getElementById('active-audio-player');
+            const titleEl = document.getElementById('music-title');
+            if (audioEl && titleEl) {
+                audioEl.src = item.src;
+                titleEl.innerText = `${item.title} (${currentMusicIdx + 1} / ${musicData.length})`;
+                audioEl.load();
+            }
+        }
+        function nextMusic() { currentMusicIdx = (currentMusicIdx + 1) % musicData.length; updateMusic(); }
+        function prevMusic() { currentMusicIdx = (currentMusicIdx - 1 + musicData.length) % musicData.length; updateMusic(); }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initNavigation();
+            initSUSTable();
+        });
+    </script>
+</body>
+</html>
