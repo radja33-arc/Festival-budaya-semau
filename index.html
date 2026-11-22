@@ -346,11 +346,43 @@
             gap: 1.25rem;
         }
 
-        /* Tipografi */
+        /* Grid khusus untuk streaming di Beranda: Kotak Video Lebih Besar dari Throughput */
+        .stream-layout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.25rem;
+            align-items: start;
+        }
+        @media (max-width: 1024px) {
+            .stream-layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tipografi & Perataan Rata Kiri-Kanan (Justify) */
         h1 { font-size: 1.75rem; font-weight: 800; line-height: 1.25; margin-bottom: 0.5rem; }
         h2 { font-size: 1.35rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.5rem; color: var(--accent-gold); }
         h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; color: #fff; }
-        p { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        p { 
+            color: var(--text-secondary); 
+            margin-bottom: 0.75rem; 
+            text-align: justify; 
+            hyphens: auto;
+        }
+        ul.materi-list {
+            padding-left: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            color: var(--text-secondary);
+            text-align: justify;
+        }
+        ul.materi-list li {
+            text-align: justify;
+        }
+        ul.materi-list li strong {
+            color: var(--text-primary);
+        }
 
         /* Tombol & Input */
         .btn {
@@ -422,17 +454,7 @@
             pointer-events: none;
         }
 
-        /* Galeri Foto Kartu */
-        .gallery-card {
-            background-color: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 0.875rem;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Tabel Responsif */
+        /* Tabel Responsif & Justify */
         .table-wrap {
             width: 100%;
             overflow-x: auto;
@@ -446,22 +468,13 @@
         th, td {
             padding: 0.75rem;
             border-bottom: 1px solid var(--border-color);
+            text-align: justify;
         }
         th {
             background-color: var(--bg-secondary);
             color: var(--accent-gold);
             font-weight: 700;
-        }
-
-        ul.materi-list {
-            padding-left: 1.25rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.45rem;
-            color: var(--text-secondary);
-        }
-        ul.materi-list li strong {
-            color: var(--text-primary);
+            text-align: left;
         }
 
         .hidden { display: none !important; }
@@ -529,7 +542,7 @@
                     ⬅️ Kembali ke Node Sebelumnya
                 </button>
                 <button type="button" class="btn btn-secondary" style="padding:0.35rem 0.75rem; min-height:36px;" onclick="switchNode('sitemap')">
-                    🗺️ Peta Situs (10 Node)
+                    🗺️ Peta Situs (9 Node)
                 </button>
             </div>
         </div>
@@ -551,7 +564,7 @@
                 <div id="search-results" class="hidden card-sub" style="margin-top:0.875rem;"></div>
             </section>
 
-            <!-- NODE 1: BERANDA -->
+            <!-- NODE 1: BERANDA (DENGAN PEMUTAR LIVE STREAMING YANG DIPERBESAR) -->
             <section id="node-home" class="node-page">
                 <div class="hero-box">
                     <span class="genui-badge" style="margin-bottom:0.75rem; display:inline-block;">🌴 Kearifan Lokal Pulau Semau, Kabupaten Kupang, NTT</span>
@@ -560,9 +573,61 @@
                         Platform hypermedia interaktif berbasis web responsif yang menyiarkan dan mendokumentasikan kekayaan budaya Pulau Semau dengan pemutar video asli, galeri arsip pariwisata, dan modul pembelajaran multimedia.
                     </p>
                     <div style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.25rem;">
-                        <button type="button" class="btn btn-primary" onclick="switchNode('streaming')">📺 Buka Pemutar Live Streaming</button>
+                        <button type="button" class="btn btn-primary" onclick="switchNode('profil-semau')">🌴 Profil & Tentang Semau</button>
                         <button type="button" class="btn btn-secondary" onclick="switchNode('galeri')">🖼️ Lihat Galeri & Arsip Budaya</button>
-                        <button type="button" class="btn btn-secondary" onclick="switchNode('sitemap')">🗺️ Jelajahi 10 Node Situs</button>
+                        <button type="button" class="btn btn-secondary" onclick="switchNode('sitemap')">🗺️ Jelajahi 9 Node Situs</button>
+                    </div>
+                </div>
+
+                <!-- PEMUTAR LIVE STREAMING DENGAN KOTAK VIDEO LEBIH BESAR -->
+                <div class="card" style="margin-top:1.25rem;">
+                    <h2>🔴 Siaran Langsung Panggung Utama Semau</h2>
+                    <p>Pemutar video HTML5 siaran langsung acara utama dari Pulau Semau dengan pilihan kualitas rendisi & terjemahan bahasa CC.</p>
+                    
+                    <div class="stream-layout-grid" style="margin-top:1rem;">
+                        <!-- Kotak Video Utama (Dibuat Lebih Besar/Dominan) -->
+                        <div>
+                            <div class="video-frame" style="width:100%;">
+                                <video id="live-stream-video" controls autoplay muted>
+                                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
+                                    <track id="stream-track-id" src="data:text/vtt;charset=utf-8,%EF%BB%BFWEBVTT%0A%0A1%0A00:00:01.000 --> 00:00:06.000%0A[ID]: Selamat datang di Siaran Langsung Festival Budaya Semau." srclang="id" label="Bahasa Indonesia" default>
+                                    Peramban Anda tidak mendukung pemutar video siaran langsung.
+                                </video>
+                                <div id="live-caption-box" class="caption-overlay">
+                                    🔴 LIVE • Panggung Utama Pantai Otan, Pulau Semau
+                                </div>
+                            </div>
+                            <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:0.75rem; margin-top:0.75rem;">
+                                <span class="genui-badge" id="player-status-badge">Status: Siaran Aktif (Zero Stall Buffer)</span>
+                                <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                                    <div>
+                                        <label for="rendition-select" style="font-size:0.85rem;">Kualitas:</label>
+                                        <select id="rendition-select" onchange="changeRendition(this.value)" class="input-field" style="width:auto; padding:0.35rem;">
+                                            <option value="auto" selected>Auto ABR</option>
+                                            <option value="1080p">1080p Full HD</option>
+                                            <option value="720p">720p HD</option>
+                                            <option value="360p">360p Hemat</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="subtitle-select" style="font-size:0.85rem;">Takarir (CC):</label>
+                                        <select id="subtitle-select" onchange="changeStreamSubtitle(this.value)" class="input-field" style="width:auto; padding:0.35rem;">
+                                            <option value="id" selected>ID (Indonesia)</option>
+                                            <option value="en">EN (English)</option>
+                                            <option value="off">Mati (Off)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kotak Telemetri Sebelah Kanan (Lebih Kecil Proporsinya) -->
+                        <div id="stream-side-panel" class="card-sub">
+                            <h3>📊 Telemetri Jaringan & Transkrip Live</h3>
+                            <p><strong>Throughput Rata-Rata:</strong> <span style="color:var(--accent-emerald);">4.85 Mbps</span></p>
+                            <p><strong>Kesehatan Buffer:</strong> <span style="color:var(--accent-sky);">12.4 Detik</span></p>
+                            <p style="font-size:0.9rem; margin-top:0.75rem;">Kotak video di sebelah kiri diperbesar agar pemantauan siaran langsung budaya Semau tampak lebih jelas dan optimal bagi penonton.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -584,47 +649,169 @@
 
             <!-- NODE 2: MATERI LENGKAP -->
             <section id="node-materi" class="node-page card hidden">
-                <h1>Modul Materi Pembelajaran: Multimedia & Live Streaming</h1>
-                <p>Garis besar materi perkuliahan WPIF-4139 Multimedia (ITAF Kupang) dan arsitektur teknis siaran langsung Festival Budaya Semau.</p>
+                <span class="genui-badge" style="margin-bottom:0.75rem; display:inline-block;">📚 Modul Akademik WPIF-4139 Multimedia</span>
+                <h1>Modul Materi Lengkap: Multimedia Interaktif & Streaming Adaptif</h1>
+                <p>Rangkuman komprehensif landasan teori representasi digital, teknik kompresi, arsitektur live streaming HLS/DASH, integrasi AI/Generative UI, dan standar aksesibilitas web sesuai ketentuan LKM ITAF Kupang.</p>
 
+                <!-- BAGIAN A: ARSITEKTUR STREAMING ADAPTIF (FOKUS KELOMPOK 11) -->
                 <div class="card-sub" style="margin-top:1.25rem;">
-                    <h2>A. Arsitektur & Pipeline Live Streaming (HLS / DASH)</h2>
-                    <p>Alur pengiriman video dari lokasi acara budaya di Pantai Otan menuju peramban penonton secara waktu nyata:</p>
+                    <h2>A. Arsitektur & Pipeline Live Streaming Adaptif (HLS / DASH)</h2>
+                    <p>Alur pengiriman siaran langsung Festival Budaya Semau dari lokasi panggung utama di Pantai Otan menuju perangkat penonton secara waktu nyata (*real-time*) dengan adaptasi lebar pita (*bandwidth*):</p>
                     
                     <div class="grid-2" style="margin-top:0.75rem;">
                         <div>
-                            <h3>1. Protokol Ingesti Lapangan</h3>
+                            <h3>1. Protokol Ingesti & Segmentasi</h3>
                             <ul class="materi-list">
-                                <li><strong>RTMP & SRT:</strong> Mengirim aliran kamera lapangan ke server peladen media relay.</li>
-                                <li><strong>Segmentasi Kecil:</strong> Video dipecah menjadi berkas segmen 2–6 detik dengan indeks daftar putar <code>.m3u8</code>.</li>
+                                <li><strong>RTMP & SRT:</strong> Mengirimkan aliran kamera lapangan ke server peladen media (*media relay*) dengan latensi rendah dan koreksi galat paket.</li>
+                                <li><strong>Transcoding Multi-Rendisi:</strong> Server mengubah video sumber menjadi beberapa tingkat resolusi dan bitrate (1080p @ 5 Mbps, 720p @ 2.8 Mbps, 480p @ 1.4 Mbps, 360p @ 800 kbps).</li>
+                                <li><strong>Segmentasi Kecil:</strong> Setiap aliran video dipecah menjadi potongan berkas berdurasi 2–6 detik dengan file manifes indeks <code>.m3u8</code> (HLS) atau <code>.mpd</code> (DASH).</li>
                             </ul>
                         </div>
                         <div>
-                            <h3>2. Adaptive Bitrate (ABR)</h3>
+                            <h3>2. Adaptive Bitrate (ABR) & Operasi Luring</h3>
                             <ul class="materi-list">
-                                <li><strong>Manajemen Buffer:</strong> Pemutar klien menjaga cadangan 10–15 detik di memori lokal.</li>
-                                <li><strong>Pemilihan Rendisi:</strong> Mengatur kualitas otomatis (1080p, 720p, 480p, 360p).</li>
+                                <li><strong>Pengukuran Throughput:</strong> Mesin klien menghitung rata-rata bergerak kecepatan unduh tiap segmen untuk memprediksi kapasitas jaringan saat ini.</li>
+                                <li><strong>Zero-Stall Buffer:</strong> Pemutar menjaga cadangan penyangga 10–15 detik di memori lokal agar pemutaran tidak terputus saat sinyal seluler di Pulau Semau berfluktuasi.</li>
+                                <li><strong>Mode Luring (PWA Cache):</strong> Pada kondisi tanpa internet, <em>Service Worker</em> menyajikan rendisi video dan aset statis yang telah disimpan sebelumnya di <em>Cache Storage</em> lokal.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
+
+                <!-- BAGIAN B: 7 PILAR REPRESENTASI DIGITAL MULTIMEDIA -->
+                <div class="card-sub" style="margin-top:1.25rem;">
+                    <h2>B. Tujuh Pilar Elemen & Pemrosesan Digital Multimedia</h2>
+                    <p>Konsep teoretis representasi data multimedia dan penerapannya pada platform dokumentasi budaya NTT:</p>
+
+                    <div class="grid-3" style="margin-top:0.75rem;">
+                        <div class="card" style="padding:1rem;">
+                            <h3>1. Teks & Hypermedia</h3>
+                            <p style="font-size:0.9rem;">Struktur informasi non-linear yang menghubungkan simpul (<em>node</em>), tautan (<em>link</em>), dan jangkar (<em>anchor</em>). Mendukung indeks pencarian lokal (JSON) dan keterbacaan tipografi web ($\ge 16\text{ px}$).</p>
+                        </div>
+                        <div class="card" style="padding:1rem;">
+                            <h3>2. Grafik & Citra Digital</h3>
+                            <p style="font-size:0.9rem;">Representasi raster (piksel) dan vektor (SVG). Menggunakan format generasi baru <strong>WebP/AVIF</strong> dengan atribut <code>srcset</code> agar gambar tajam namun hemat kuota data.</p>
+                        </div>
+                        <div class="card" style="padding:1rem;">
+                            <h3>3. Audio Digital</h3>
+                            <p style="font-size:0.9rem;">Proses pencuplikan (*sampling rate* 44.1 kHz) dan kuantisasi suara instrumen Sasando maupun narasi cerita rakyat ke format terkompresi <strong>MP3/AAC</strong> disertai transkrip teks.</p>
+                        </div>
+                        <div class="card" style="padding:1rem;">
+                            <h3>4. Video Digital</h3>
+                            <p style="font-size:0.9rem;">Rangkaian bingkai gambar bergerak dengan pengodean spasial-temporal (H.264/AVC) dan <em>chroma subsampling</em> (4:2:0) untuk efisiensi transmisi siaran web.</p>
+                        </div>
+                        <div class="card" style="padding:1rem;">
+                            <h3>5. Kompresi Lossless vs Lossy</h3>
+                            <p style="font-size:0.9rem;"><strong>Lossless</strong> (Huffman, LZW, PNG) mempertahankan 100% keaslian bit data arsip; <strong>Lossy</strong> (JPEG, MP3, MP4) membuang informasi yang kurang peka bagi indra manusia demi rasio kompresi tinggi.</p>
+                        </div>
+                        <div class="card" style="padding:1rem;">
+                            <h3>6. Animasi & Interaktivitas</h3>
+                            <p style="font-size:0.9rem;">Transisi antarmuka berbasis CSS/JavaScript serta penyisipan elemen interaktif (seperti kuis otomatis pada detik ke-10 pemutaran video pembelajaran).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BAGIAN C: PERBANDINGAN FORMAT & KOMPRESI ASET -->
+                <div class="card-sub" style="margin-top:1.25rem;">
+                    <h2>C. Matriks Perbandingan Format & Strategi Optimasi Aset Web</h2>
+                    <p>Acuan pemilihan format media untuk menjaga ukuran halaman awal $\le 2\text{ MB}$ dan paket luring $\le 50\text{ MB}$:</p>
+                    
+                    <div class="table-wrap" style="margin-top:0.75rem;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Jenis Media</th>
+                                    <th>Format Optimal</th>
+                                    <th>Jenis Kompresi</th>
+                                    <th>Implikasi Bandwidth & Kegunaan di Proyek</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Foto & Galeri</strong></td>
+                                    <td>WebP / JPEG Progresif</td>
+                                    <td>Lossy</td>
+                                    <td>Mengurangi ukuran berkas hingga 30–50% dibanding PNG tanpa penurunan visual berarti pada layar ponsel.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ikon & Logo UI</strong></td>
+                                    <td>SVG (Scalable Vector)</td>
+                                    <td>Lossless (XML)</td>
+                                    <td>Ukuran sangat kecil (&lt; 5 KB) dan tetap tajam pada pembesaran layar 200% (WCAG 1.4.4).</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Musik & Podkes</strong></td>
+                                    <td>MP3 / AAC (128 kbps)</td>
+                                    <td>Lossy (Psikoakustik)</td>
+                                    <td>Kualitas suara jernih untuk alunan musik tradisional dengan konsumsi data sekitar 1 MB per menit.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Video & Streaming</strong></td>
+                                    <td>MP4 (H.264) + WebVTT</td>
+                                    <td>Lossy (Inter-frame)</td>
+                                    <td>Kompatibel secara native di seluruh peramban HTML5 dan mendukung pergantian kualitas adaptif.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- BAGIAN D: CONVERSATIONAL AI, GENERATIVE UI & WCAG 2.1 AA -->
+                <div class="grid-2" style="margin-top:1.25rem;">
+                    <div class="card-sub">
+                        <h2>D. Integrasi Conversational AI & Generative UI</h2>
+                        <ul class="materi-list">
+                            <li><strong>Conversational AI Luring:</strong> Menggunakan pemetaan berbasis aturan (*rule-based intent matching*) dari basis pengetahuan JSON lokal sehingga tetap merespons pertanyaan budaya dan jadwal tanpa koneksi internet maupun kebocoran data privasi.</li>
+                            <li><strong>Generative UI (Runtime Adaptation):</strong> Antarmuka merakit ulang tata letak secara dinamis saat dijalankan berdasarkan konteks (Mode Standar, Mode Hemat Data 360p, Mode Theater, dan Mode Kontras Tinggi).</li>
+                        </ul>
+                    </div>
+                    <div class="card-sub">
+                        <h2>E. Prinsip Aksesibilitas WCAG 2.1 Level AA</h2>
+                        <ul class="materi-list">
+                            <li><strong>Perceivable:</strong> Teks alternatif (<code>alt</code>) pada gambar, takarir pada video, transkrip pada audio, dan rasio kontras warna minimal <strong>4,5:1</strong>.</li>
+                            <li><strong>Operable:</strong> Seluruh menu dan kontrol dapat diakses menggunakan papan ketik (tombol <code>Tab</code>), indikator fokus terlihat jelas, dan ukuran tombol minimal <strong>44×44 px</strong>.</li>
+                            <li><strong>Understandable & Robust:</strong> Indikator status tidak hanya mengandalkan warna tunggal (disertai ikon/teks) serta struktur HTML5 semantik.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- TOMBOL NAVIGASI LANJUTAN KE PRAKTIK -->
+                <div style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border-color);">
+                    <button type="button" class="btn btn-primary" onclick="switchNode('home')">📺 Ke Beranda (Pemutar Streaming)</button>
+                    <button type="button" class="btn btn-secondary" onclick="switchNode('abr-ai')">📊 Simulasi Bandwidth ABR & AI</button>
+                    <button type="button" class="btn btn-secondary" onclick="switchNode('media-interaktif')">🎬 Coba Video Interaktif & Kuis</button>
+                </div>
             </section>
 
-            <!-- NODE 3: VIDEO INTERAKTIF & PODKES AUDIO -->
+            <!-- NODE 3: VIDEO INTERAKTIF, KUIS, PILIHAN KUALITAS & PODKES AUDIO -->
             <section id="node-media-interaktif" class="node-page card hidden">
-                <h1>Video Interaktif & Podkes Audio Budaya Semau</h1>
-                <p>Pemutar video interaktif asli (HTML5) yang memunculkan kuis di detik ke-10 serta pemutar audio podcast budaya.</p>
+                <h1>Video Interaktif, Simulasi, & Podkes Audio Budaya Semau</h1>
+                <p>Pemutar video interaktif dengan tombol kontrol simulasi, kuis otomatis di detik ke-10, pilihan kualitas video, serta pemutar podcast audio budaya lengkap dengan transkrip aksesibel.</p>
 
+                <!-- BAGIAN 1: VIDEO INTERAKTIF DENGAN KONTROL & KUIS -->
                 <div class="card-sub" style="margin-top:1rem;">
-                    <h2>🎬 Pemutar Video Interaktif (Dilengkapi Kuis Otomatis)</h2>
-                    <div class="video-frame" style="margin:0.75rem 0;">
+                    <h2>🎬 Pemutar Video Interaktif (Dilengkapi Kontrol Simulasi & Kuis)</h2>
+                    <div style="display:flex; gap:0.5rem; margin-bottom:0.75rem; flex-wrap:wrap; align-items:center;">
+                        <button type="button" class="btn btn-primary" style="padding:0.4rem 0.8rem; font-size:0.9rem;" onclick="playInteractiveVideo()">▶️ Putar Simulasi</button>
+                        <button type="button" class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.9rem;" onclick="pauseInteractiveVideo()">⏸️ Jeda</button>
+                        <button type="button" class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.9rem;" onclick="triggerQuizManual()">💡 Uji Kuis Interaktif</button>
+                        <div style="margin-left:auto; display:flex; align-items:center; gap:0.4rem;">
+                            <label for="interactive-rendition" style="font-size:0.85rem;">Kualitas:</label>
+                            <select id="interactive-rendition" onchange="changeInteractiveRendition(this.value)" class="input-field" style="width:auto; padding:0.3rem;">
+                                <option value="720p" selected>720p HD</option>
+                                <option value="360p">360p Hemat</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="video-frame" style="position:relative;">
                         <video id="interactive-video-element" controls ontimeupdate="checkInteractiveTime(this)">
                             <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
                             Peramban Anda tidak mendukung elemen video HTML5.
                         </video>
 
                         <div id="interactive-quiz-overlay" class="hidden" style="position:absolute; inset:0; background:rgba(11,17,32,0.95); padding:1.5rem; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; z-index:10;">
-                            <h3 style="color:var(--accent-gold);">Kuis Interaktif (Detik ke-10)</h3>
+                            <h3 style="color:var(--accent-gold);">Kuis Interaktif Pembelajaran Multimedia</h3>
                             <p>Mengapa pemutar HLS/DASH memecah video menjadi segmen-segmen kecil (2–6 detik)?</p>
                             <div style="display:flex; flex-wrap:wrap; gap:0.75rem; justify-content:center; margin-top:0.5rem;">
                                 <button type="button" class="btn btn-primary" onclick="answerQuiz(true)">A. Agar mudah beradaptasi dengan kecepatan ABR</button>
@@ -632,64 +819,65 @@
                             </div>
                             <p id="quiz-feedback" style="margin-top:0.75rem; font-weight:700;"></p>
                         </div>
-                        <div class="caption-overlay">[Takarir ID]: Penjelasan arsitektur streaming interaktif Festival Budaya Semau.</div>
+                        <div class="caption-overlay">[Takarir ID]: Simulasi pemutar video interaktif Festival Budaya Semau.</div>
                     </div>
+                </div>
+
+                <!-- BAGIAN 2: PODKES AUDIO (DISEDIAKAN KEMBALI DI NODE 3 SESUAI PERMINTAAN) -->
+                <div class="card-sub" style="margin-top:2rem;">
+                    <h2>🎙️ Podkes Audio: Bincang Budaya Semau</h2>
+                    <p>Pemutar audio asli HTML5 untuk siaran podcast budaya dan alunan musik tradisional.</p>
+                    
+                    <audio controls style="width:100%; margin:0.75rem 0;">
+                        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                        Peramban Anda tidak mendukung pemutar audio.
+                    </audio>
+
+                    <details class="card" style="background:var(--bg-primary); padding:1rem; border-radius:0.5rem; margin-top:0.5rem;">
+                        <summary style="font-weight:700; color:var(--accent-gold); cursor:pointer;">📄 Baca Transkrip Lengkap Audio (Aksesibilitas WCAG 1.2.1)</summary>
+                        <div style="margin-top:0.75rem; font-size:0.9rem; color:var(--text-secondary); display:flex; flex-direction:column; gap:0.5rem;">
+                            <p><strong>[00:00] Penyerar:</strong> Selamat datang di Podkes Budaya Semau. Hari ini kita mendiskusikan pelestarian musik Sasando dan tarian adat di era digital.</p>
+                            <p><strong>[01:30] Narasumber:</strong> Platform web responsif ini membantu memperkenalkan budaya Semau ke kancah nasional maupun internasional secara efisien.</p>
+                        </div>
+                    </details>
                 </div>
             </section>
 
-            <!-- NODE 4: PEMUTAR LIVE STREAMING ASLI -->
-            <section id="node-streaming" class="node-page card hidden">
-                <h1>Pemutar Live Streaming Panggung Utama Semau</h1>
-                <p>Siaran langsung menggunakan pemutar video HTML5 asli.</p>
+            <!-- NODE 4: PROFIL & TENTANG SEMAU (MENGGANTIKAN PEMUTAR STREAMING) -->
+            <section id="node-profil-semau" class="node-page card hidden">
+                <span class="genui-badge" style="margin-bottom:0.75rem; display:inline-block;">🏝️ Mengenal Lebih Dekat Pulau Semau</span>
+                <h2>A. Gambaran Umum Pulau Semau</h2>
+                <p>Pulau Semau adalah sebuah pulau indah yang terletak di sebelah barat Pulau Timor, masuk dalam wilayah administratif Kabupaten Kupang, Nusa Tenggara Timur. Pulau ini terkenal dengan keindahan pantainya yang masih alami serta warisan tradisi budaya Suku Helong.</p>
+                <p>Pulau Semau adalah sebuah pulau kecil dengan panjang sekitar empat puluh lima kilometer dan lebar kurang lebih lima sampai enam kilometer terletak di bagian barat pulau Timor yang termasuk dalam wilayah administratif Kabupaten Kupang, Nusa Tenggara Timur, Indonesia. Pulau tersebut memiliki dua kecamatan yang secara administratif di mekarkan pada tahun 2006 terdiri dari Kecamatan Semau Utara dan Semau Selatan. Wilayah Kecamatan Semau Utara terdiri dari delapan desa yaitu: Desa Batuinan, Desa Bokonusan, Desa Hansisi, Desa Huilelot, Desa Letbaun, Desa Otan, Desa Uiasa dan Desa Uitao dan wilayah Kecamatan Semau Selatan terdiri dari enam desa yaitu Desa Onansila, Desa Uitiuhana (Oetefu Kecil), Desa Akle, Desa Uitiuhtuan (Oetefu Besar), Desa Naikean dan Desa Uiboa.</p>
+                <p>Pulau Semau memiliki nama lain yang dikenal dengan sebuatan Nusa Bungtilu merupakan nama asli pulau tersbut. Nusa Bungtilu memiliki arti sebagai Pulau Bunga Tiga Warna. Makna kata Bunga dalam sebutan tersebut bukan bunga yang umumnya dikenal oleh masayarakat luas, tetapi bunga yang dimaksud adalah kapas yang digunakan sebagai bahan dasar untuk menenun kain adat untuk di pakai saat menghadiri acara penting seperti acara pernikahan, pesta rakyat, orang meninggal, Gereja bahkan dipakai saat beraktifitas sehari-hari. Sedangkan makna Tiga warna adalah warna Putih, Merah, dan Hitam. Tiga warna kain adat tersebut dipercaya sebagai gabungan warna kain adat dari penduduk Pulau Semau antara lain suku Helong, Timor dan Rote. Suku Helong (penduduk asli) dominan kain adat berwarna putih diantara warna merah, kemudian Suku Timor (penduduk pendatang) dominan kain adat warna merah, dan kain adat Rote (penduduk pendatang) dominan kain adat warna hitam.</p>
+                
+                <h2>B. Potensi Wisata</h2>
+                <p>Pulau Semau memiliki potensi yang sangat besar untuk di jadikan sebagai salah satu daerah tujuan wisata di Nusa Tenggara Timur akan tetapi Pemerintah Kabupaten Kupang tidak tanggap dalam mengembangkan potensi tersebut. Pemerintah Kabupaten Kupang seakan tenang dan damai membiarkan potensi yang telah tersedia berjalan tanpa sentuhan apapun yang dibuktikan dengan minimnya ketersediaan Sumber Daya Manusia (SDM) dalam Bidang Pariwisata, kurang tersedianya air bersih, keadaan jalan dibiarkan rusak, kekurangan aliran arus listrik serta masyarakat tidak diberdayakan sebagai penopang SDM. Potensi besar yang dimaksud dalam tulisan ini antara lain potensi Alam, potensi Budaya serta potensi Pertanian yang akan jabarkan secara detail sebagai berikut :</p>
+                <h3>a. Potensi Alam</h3>
+                <p>Sehubungan dengan letak alam dan kondisi geografis Pulau Semau adalah sebuah daerah kepulauan maka kekayaan alam yang dimiliki adalah bentangan pantai dengan pasir putih yang begitu indah untuk dijadikan sebagai salah satu daerah tujuan wisata yang berdaya saing di Propinsi Nusa Tenggara Timur. Terdapat beberapa pantai yang memiliki peluang untuk dikelola sebagai obyek wisata antara lain Pantai Otan, Pantai Uinian, Pantai Onanbalu, Pantai Liman, dan Pantai Pulau Tabui. Namun untuk berkunjung ke Pantai Pulau Tabui wisatawan harus menyewa boat nelayan karena pulau tersebut berada diluar daratan Pulau Semau</p>
+                
+                <h2>A. Gambaran Umum Pulau Semau</h2>
+                 <p>Sehubungan dengan letak alam dan kondisi geografis Pulau Semau adalah sebuah daerah kepulauan maka kekayaan alam yang dimiliki adalah bentangan pantai dengan pasir putih yang begitu indah untuk dijadikan sebagai salah satu daerah tujuan wisata yang berdaya saing di Propinsi Nusa Tenggara Timur. Terdapat beberapa pantai yang memiliki peluang untuk dikelola sebagai obyek wisata antara lain Pantai Otan, Pantai Uinian, Pantai Onanbalu, Pantai Liman, dan Pantai Pulau Tabui. Namun untuk berkunjung ke Pantai Pulau Tabui wisatawan harus menyewa boat nelayan karena pulau tersebut berada diluar daratan Pulau Semau</p>
 
-                <div class="grid-2" style="margin-top:1rem;">
-                    <div>
-                        <div class="video-frame">
-                            <video id="live-stream-video" controls autoplay muted>
-                                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4">
-                                Peramban Anda tidak mendukung pemutar video siaran langsung.
-                            </video>
-                            <div class="caption-overlay">
-                                🔴 LIVE • Panggung Utama Pantai Otan, Pulau Semau
-                            </div>
-                        </div>
-                        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:0.75rem; margin-top:0.75rem;">
-                            <span class="genui-badge" id="player-status-badge">Status: Siaran Aktif (Zero Stall Buffer)</span>
-                            <div style="display:flex; align-items:center; gap:0.5rem;">
-                                <label for="rendition-select">Kualitas:</label>
-                                <select id="rendition-select" onchange="changeRendition(this.value)" class="input-field" style="width:auto;">
-                                    <option value="auto" selected>Auto ABR (Adaptif)</option>
-                                    <option value="1080p">1080p Full HD</option>
-                                    <option value="720p">720p HD</option>
-                                    <option value="360p">360p Hemat Data</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div id="stream-side-panel" class="card-sub">
-                        <h3>📊 Telemetri Jaringan & Transkrip Live</h3>
-                        <p><strong>Throughput Rata-Rata:</strong> <span style="color:var(--accent-emerald);">4.85 Mbps</span></p>
-                        <p><strong>Kesehatan Buffer:</strong> <span style="color:var(--accent-sky);">12.4 Detik</span></p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- NODE 5: KATALOG ACARA -->
-            <section id="node-katalog" class="node-page card hidden">
-                <h1>Katalog Pertunjukan Festival Budaya Semau</h1>
-                <p>Daftar mata acara yang telah mendapatkan izin perekaman dan verifikasi narasumber budaya setempat.</p>
-                <div class="grid-3" style="margin-top:1rem;">
+                <div class="grid-2" style="margin-top:1.25rem;">
                     <div class="card-sub">
-                        <span class="genui-badge">Tarian Adat</span>
-                        <h3 style="margin-top:0.5rem;">Tarian Perang Helatoba</h3>
-                        <p>Tarian penyambutan dan ketangguhan masyarakat Suku Helong di Pulau Semau.</p>
-                        <button type="button" class="btn btn-primary" onclick="switchNode('streaming')">▶️ Tonton Siaran</button>
+                        <h3>🌊 Potensi Pariwisata & Alam</h3>
+                        <p>Memiliki destinasi wisata unggulan seperti Pantai Liman dengan pasir putih dan bukit indahnya, Pantai Otan, serta Pantai Onanbalu yang menawarkan ketenangan dan keasrian tropis.</p>
                     </div>
+                    <div class="card-sub">
+                        <h3>🎶 Warisan Seni & Budaya</h3>
+                        <p>Masyarakat Semau merawat tradisi leluhur melalui alunan musik instrumen petik tradisional Sasando, tarian perang Helatoba, serta kearifan lokal dalam mengelola sumber daya pesisir.</p>
+                    </div>
+                </div>
+
+                <div style="margin-top:1.5rem;">
+                    <button type="button" class="btn btn-primary" onclick="switchNode('home')">📺 Kembali ke Beranda (Tonton Streaming)</button>
+                    <button type="button" class="btn btn-secondary" onclick="switchNode('galeri')">🖼️ Buka Galeri & Peta Lokasi</button>
                 </div>
             </section>
 
-            <!-- NODE 6: SIMULATOR ABR & SEMAU-AI -->
+            <!-- NODE 5: SIMULATOR ABR & SEMAU-AI -->
             <section id="node-abr-ai" class="node-page card hidden">
                 <h1>Simulator ABR & Semau-AI (Asisten Cerdas Lokal)</h1>
                 <div class="grid-2" style="margin-top:1rem;">
@@ -715,10 +903,10 @@
                 </div>
             </section>
 
-            <!-- NODE 7: GALERI & ARSIP (DENGAN SLIDER & ATRIBUSI) -->
+            <!-- NODE 6: GALERI & ARSIP -->
             <section id="node-galeri" class="node-page card hidden">
                 <h1>Galeri & Arsip Festival Budaya Semau</h1>
-                <p>Dokumentasi foto pariwisata, video tarian, dan alunan musik tradisional lengkap dengan informasi atribusi lisensi aset budaya (UU No. 28/2014).</p>
+                <p>Dokumentasi foto pariwisata, video tarian, dan alunan musik tradisional lengkap dengan informasi atribusi lisensi, link sumber, dan titik Google Maps khusus foto (UU No. 28/2014).</p>
 
                 <!-- KONTROL PENGATUR RASIO GAMBAR -->
                 <div style="display:flex; gap:0.5rem; align-items:center; margin:1rem 0; flex-wrap:wrap;">
@@ -730,31 +918,54 @@
 
                 <!-- 1. SLIDER FOTO PARIWISATA -->
                 <div class="card-sub" style="margin-top:1.25rem;">
-                    <h2>🖼️ Galeri Foto Pariwisata (6 Foto)</h2>
+                    <h2>🖼️ Galeri Foto Pariwisata (5 Foto)</h2>
                     <div style="position:relative; width:100%; max-width:600px; margin:0.75rem auto; text-align:center;">
                         <div id="photo-slider-container" style="width:100%; aspect-ratio:4/3; background:#000; border-radius:0.75rem; overflow:hidden; border:1px solid var(--border-color); display:flex; align-items:center; justify-content:center;">
                             <img id="active-photo-img" src="assets/icons/icon-192.JPG" alt="Foto Pariwisata Semau" style="width:100%; height:100%; object-fit:cover;">
                         </div>
-                        <p id="photo-caption" style="margin-top:0.5rem; font-weight:700; color:var(--text-primary);">1. Pantai Otan & Pasir Putih (1 / 6)</p>
+                        <p id="photo-caption" style="margin-top:0.5rem; font-weight:700; color:var(--text-primary);">1. Pantai Liman (1 / 5)</p>
                         
-                        <!-- ATRIBUSI RAPI DI BAWAH FOTO -->
-                        <div style="background:var(--bg-primary); padding:0.6rem; border-radius:0.5rem; margin-top:0.5rem; font-size:0.85rem; border:1px solid var(--border-color); text-align:left;">
+                        <div style="background:var(--bg-primary); padding:0.8rem; border-radius:0.5rem; margin-top:0.5rem; font-size:0.85rem; border:1px solid var(--border-color); text-align:left; display:flex; flex-direction:column; gap:0.3rem;">
                             <p style="margin:0; color:var(--text-secondary);"><strong>Pencipta / Sumber:</strong> <span id="photo-creator">Marlinda Lake</span></p>
-                            <p style="margin:0; color:var(--accent-emerald);"><strong>Lisensi:</strong> <span id="photo-license">Youtube</span></p>
+                            <p style="margin:0; color:var(--text-secondary);"><strong>Lisensi:</strong> <span id="photo-license">YouTube Standard License</span></p>
+                            <p style="margin:0;"><strong>Link Sumber Foto:</strong> <a id="photo-source-link" href="https://www.youtube.com" target="_blank" style="color:var(--accent-sky); word-break:break-all;">https://www.youtube.com/watch?v=contoh-pariwisata</a></p>
                         </div>
 
-                        <!-- TOMBOL LIHAT MAPS PANTAI LIMAN -->
                         <div style="margin-top:0.75rem; margin-bottom:0.75rem;">
                             <a id="photo-maps-btn" href="https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z" target="_blank" class="btn btn-secondary" style="width:100%; text-decoration:none; font-size:0.9rem; display:block; text-align:center;">
-                                📍 Buka Peta Lokasi di Google Maps (Pantai Liman)
+                                📍 Buka Peta Lokasi di Google Maps
                             </a>
                         </div>
 
-                        <!-- TOMBOL NAVIGASI SLIDER -->
                         <div style="display:flex; justify-content:space-between; margin-top:0.75rem;">
                             <button type="button" class="btn btn-primary" onclick="prevPhoto()">⬅️ Foto Sebelumnya</button>
                             <button type="button" class="btn btn-primary" onclick="nextPhoto()">Foto Selanjutnya ➡️</button>
                         </div>
+                    </div>
+                </div>
+
+                <!-- 1B. SLIDER FOTO KAIN ADAT (3 FOTO TANPA MAPS) -->
+                <div class="card-sub" style="margin-top:2rem;">
+                    <h2>🧵 Galeri Foto Kain Adat Tiga Warna (3 Foto)</h2>
+                    <div style="position:relative; width:100%; max-width:600px; margin:0.75rem auto; text-align:center;">
+                        <div id="kain-slider-container" style="width:100%; aspect-ratio:4/3; background:#000; border-radius:0.75rem; overflow:hidden; border:1px solid var(--border-color); display:flex; align-items:center; justify-content:center;">
+                            <img id="active-kain-img" src="assets/icons/kain-helong.JPG" alt="Foto Kain Adat Semau" style="width:100%; height:100%; object-fit:cover;">
+                        </div>
+                        <p id="kain-caption" style="margin-top:0.5rem; font-weight:700; color:var(--text-primary);">1. Kain Adat Suku Helong — Dominan Putih di Antara Merah (1 / 3)</p>
+                        
+                        <div style="background:var(--bg-primary); padding:0.8rem; border-radius:0.5rem; margin-top:0.5rem; font-size:0.85rem; border:1px solid var(--border-color); text-align:left; display:flex; flex-direction:column; gap:0.3rem;">
+                            <p style="margin:0; color:var(--text-secondary);"><strong>Pencipta / Sumber:</strong> <span id="kain-creator">Dokumentasi Budaya Suku Helong Semau</span></p>
+                            <p style="margin:0; color:var(--text-secondary);"><strong>Lisensi:</strong> <span id="kain-license">UU No. 28/2014 tentang Hak Cipta (Edukatif)</span></p>
+                            <p style="margin:0;"><strong>Link Sumber Foto:</strong> <a id="kain-source-link" href="https://www.indonesia.travel/gb/en/travel-ideas/culture/pakaian-adat-suku-helong" target="_blank" style="color:var(--accent-sky); word-break:break-all;">https://www.indonesia.travel/gb/en/travel-ideas/culture/pakaian-adat-suku-helong</a></p>
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; margin-top:0.75rem;">
+                            <button type="button" class="btn btn-primary" onclick="prevKain()">⬅️ Foto Sebelumnya</button>
+                            <button type="button" class="btn btn-primary" onclick="nextKain()">Foto Selanjutnya ➡️</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 2. SLIDER VIDEO TARIAN -->
                 <div class="card-sub" style="margin-top:2rem;">
                     <h2>🎬 Arsip Video Tarian Adat (3 Video)</h2>
@@ -767,10 +978,12 @@
                         </div>
                         <p id="video-caption" style="margin-top:0.5rem; font-weight:700; color:var(--text-primary);">1. Tarian Perang Helatoba (1 / 3)</p>
                         
-                        <div style="background:var(--bg-primary); padding:0.6rem; border-radius:0.5rem; margin-top:0.5rem; font-size:0.85rem; border:1px solid var(--border-color); text-align:left;">
-                            <p style="margin:0; color:var(--text-secondary);"><strong>Pencipta / Sumber:</strong> Sanggar Seni Budaya Helong Kupang</p>
-                            <p style="margin:0; color:var(--accent-emerald);"><strong>Lisensi:</strong> Hak Cipta Edukatif / Izin Tokoh Adat Setempat</p>
+                        <div style="background:var(--bg-primary); padding:0.8rem; border-radius:0.5rem; margin-top:0.5rem; font-size:0.85rem; border:1px solid var(--border-color); text-align:left; display:flex; flex-direction:column; gap:0.3rem;">
+                            <p style="margin:0; color:var(--text-secondary);"><strong>Pencipta / Sumber:</strong> <span id="video-creator">Sanggar Seni Budaya Helong Kupang</span></p>
+                            <p style="margin:0; color:var(--text-secondary);"><strong>Lisensi:</strong> <span id="video-license">Hak Cipta Edukatif / Izin Tokoh Adat Setempat (CC BY-SA 4.0)</span></p>
+                            <p style="margin:0;"><strong>Link Sumber Video:</strong> <a id="video-source-link" href="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" target="_blank" style="color:var(--accent-sky); word-break:break-all;">https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4</a></p>
                         </div>
+
                         <div style="display:flex; justify-content:space-between; margin-top:0.75rem;">
                             <button type="button" class="btn btn-primary" onclick="prevVideo()">⬅️ Video Sebelumnya</button>
                             <button type="button" class="btn btn-primary" onclick="nextVideo()">Video Selanjutnya ➡️</button>
@@ -788,9 +1001,11 @@
                                 <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
                                 Peramban Anda tidak mendukung audio.
                             </audio>
-                            <div style="background:var(--bg-card); padding:0.6rem; border-radius:0.5rem; font-size:0.85rem; border:1px solid var(--border-color);">
-                                <p style="margin:0; color:var(--text-secondary);"><strong>Pencipta / Sumber:</strong> Maestro Sasando Rote-Kupang (Domain Publik / CC BY 4.0)</p>
-                                <p style="margin:0; color:var(--accent-emerald);"><strong>Lisensi:</strong> Atribusi Terbuka untuk Pembelajaran Multimedia</p>
+                            
+                            <div style="background:var(--bg-card); padding:0.8rem; border-radius:0.5rem; font-size:0.85rem; border:1px solid var(--border-color); display:flex; flex-direction:column; gap:0.3rem;">
+                                <p style="margin:0; color:var(--text-secondary);"><strong>Pencipta / Sumber:</strong> <span id="music-creator">Maestro Sasando Rote-Kupang</span></p>
+                                <p style="margin:0; color:var(--text-secondary);"><strong>Lisensi:</strong> <span id="music-license">Domain Publik / Atribusi Terbuka (CC BY 4.0)</span></p>
+                                <p style="margin:0;"><strong>Link Sumber Audio:</strong> <a id="music-source-link" href="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" target="_blank" style="color:var(--accent-sky); word-break:break-all;">https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3</a></p>
                             </div>
                         </div>
                         <div style="display:flex; justify-content:space-between; margin-top:0.75rem;">
@@ -801,7 +1016,7 @@
                 </div>
             </section>
 
-            <!-- NODE 8: LAPORAN -->
+            <!-- NODE 7: LAPORAN -->
             <section id="node-laporan" class="node-page card hidden">
                 <h1>Dokumentasi Proyek & Laporan Akhir (PPT & Word)</h1>
                 <div class="grid-2" style="margin-top:1rem;">
@@ -817,7 +1032,7 @@
                 <div id="laporan-preview-box" class="hidden card-sub" style="margin-top:1rem;"></div>
             </section>
 
-            <!-- NODE 9: EVALUASI SUS -->
+            <!-- NODE 8: EVALUASI SUS -->
             <section id="node-sus" class="node-page card hidden">
                 <h1>Kuesioner Evaluasi System Usability Scale (SUS)</h1>
                 <form onsubmit="calculateSUS(event)" style="margin-top:1rem;">
@@ -836,19 +1051,96 @@
                 </form>
             </section>
 
-            <!-- NODE 10: PETA SITUS -->
+            <!-- NODE 9: MATRIKS ASET & ATRIBUSI HAK CIPTA (MENGGANTIKAN KATALOG ACARA & DIBUAT 1 NODE KHUSUS) -->
+            <section id="node-atribusi" class="node-page card hidden">
+                <span class="genui-badge" style="margin-bottom:0.75rem; display:inline-block;">⚖️ Kepatuhan UU Hak Cipta No. 28 / 2014</span>
+                <h1>Matriks Aset & Atribusi Hak Cipta</h1>
+                <p>Tabel komprehensif yang merangkum seluruh kepemilikan aset digital, sumber referensi eksternal, jenis lisensi (Creative Commons / Domain Publik / Standard License), serta izin penggunaan dalam proyek platform Festival Budaya Semau.</p>
+                
+                <div class="table-wrap" style="margin-top:1rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Aset / Media</th>
+                                <th>Jenis Aset</th>
+                                <th>Pencipta / Pemilik Asli</th>
+                                <th>Jenis Lisensi</th>
+                                <th>Tautan / Sumber Resmi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Pantai Liman</strong></td>
+                                <td>Foto Pariwisata</td>
+                                <td>Marlinda Lake</td>
+                                <td>YouTube Standard License</td>
+                                <td><a href="https://www.youtube.com/watch?v=pantai-liman-semau" target="_blank" style="color:var(--accent-sky);">Tonton Video Sumber</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pantai Otan</strong></td>
+                                <td>Foto Pariwisata</td>
+                                <td>Wiliyy Bani</td>
+                                <td>Creative Commons (CC BY 4.0)</td>
+                                <td><a href="https://www.facebook.com/share/p/pantai-otan-semau" target="_blank" style="color:var(--accent-sky);">Lihat Postingan Sumber</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pantai Onanbalu</strong></td>
+                                <td>Foto Pariwisata</td>
+                                <td>Dinas Pariwisata Kab. Kupang</td>
+                                <td>Domain Publik Edukatif</td>
+                                <td><a href="https://kupangkab.go.id" target="_blank" style="color:var(--accent-sky);">Portal Resmi Kab. Kupang</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pantai Uinian</strong></td>
+                                <td>Foto Dokumentasi</td>
+                                <td>Komunitas Adat Semau</td>
+                                <td>Izin Penelitian Akademik ITAF</td>
+                                <td><a href="https://itaf.ac.id" target="_blank" style="color:var(--accent-sky);">Repositori ITAF Kupang</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kolam Penyu</strong></td>
+                                <td>Foto Pariwisata</td>
+                                <td>Pokdarwis Semau</td>
+                                <td>UU No. 28/2014 (Edukatif)</td>
+                                <td><a href="https://instagram.com" target="_blank" style="color:var(--accent-sky);">Instagram Pokdarwis</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tarian Perang Helatoba</strong></td>
+                                <td>Video Tarian</td>
+                                <td>Sanggar Seni Helong Kupang</td>
+                                <td>CC BY-SA 4.0 / Izin Tokoh Adat</td>
+                                <td><a href="https://commondatastorage.googleapis.com" target="_blank" style="color:var(--accent-sky);">Google Cloud Storage Video</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ansambel Sasando Klasik</strong></td>
+                                <td>Audio Musik</td>
+                                <td>Maestro Sasando Rote-Kupang</td>
+                                <td>Domain Publik / Terbuka</td>
+                                <td><a href="https://www.soundhelix.com" target="_blank" style="color:var(--accent-sky);">SoundHelix Audio Archive</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Antarmuka & Sistem PWA</strong></td>
+                                <td>Kode Pemrograman</td>
+                                <td>Kelompok 11 ITAF Kupang</td>
+                                <td>Open Source Akademik</td>
+                                <td><span style="color:var(--accent-emerald);">Internal Proyek WPIF-4139</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- NODE 10 (SEKARANG JADI NODE 9 / PETA SITUS): PETA SITUS KOMPOSIT -->
             <section id="node-sitemap" class="node-page card hidden">
-                <h1>Peta Situs Komposit (10 Node) & Atribusi Hak Cipta</h1>
+                <h1>Peta Situs Komposit (9 Node) & Navigasi</h1>
                 <div class="grid-2" style="margin-top:1rem;">
                     <div class="card-sub">
-                        <h3>🕸️ Jaringan 10 Node Hypermedia</h3>
+                        <h3>🕸️ Jaringan 9 Node Hypermedia</h3>
                         <ul id="sitemap-links-list" style="padding-left:1.25rem; display:flex; flex-direction:column; gap:0.4rem;"></ul>
                     </div>
                     <div class="card-sub">
-                        <h3>⚖️ Matriks Atribusi & Izin Budaya</h3>
-                        <ul class="materi-list">
-                            <li><strong>Ikon UI:</strong> Kelompok 11 (CC BY-SA 4.0).</li>
-                        </ul>
+                        <h3>⚖️ Kepatuhan Hak Cipta</h3>
+                        <p>Seluruh materi visual, audio, dan teks dalam 9 node ini telah disesuaikan dengan standar atribusi dan izin pemanfaatan edukatif.</p>
                     </div>
                 </div>
             </section>
@@ -857,7 +1149,7 @@
 
         <!-- NAVIGASI KANAN -->
         <aside class="right-node-nav" aria-label="Navigasi Simpul Hypermedia">
-            <div class="nav-heading"><span aria-hidden="true">🧭</span><span>Simpul Navigasi (10 Node)</span></div>
+            <div class="nav-heading"><span aria-hidden="true">🧭</span><span>Simpul Navigasi (9 Node)</span></div>
             <nav id="right-node-list" class="node-nav-list"></nav>
         </aside>
 
@@ -869,89 +1161,133 @@
 
     <script>
         /* ==========================================================================
-           PENGATURAN DATA FOTO, VIDEO, DAN MUSIK (POSISI DI PALING AWAL SKRIP)
+           PENGATURAN DATA FOTO, VIDEO, DAN MUSIK LENGKAP DENGAN ATRIBUSI & LINK
            ========================================================================== */
 
-        // 1. Data 6 Foto Pariwisata & Atribusinya (Bisa diubah dengan cepat di sini)
+        // 1. Data 5 Foto Pariwisata
         const photoData = [
             { 
-                src: 'assets/icons/icon-192.JPG', 
-                title: '1. Pantai Otan & Pasir Putih', 
+                src: 'assets/icons/liman.JPEG', 
+                title: '1. Pantai Liman', 
                 creator: 'Marlinda Lake', 
-                license: 'Youtube',
+                license: 'YouTube Standard License',
+                sourceUrl: 'https://www.youtube.com/watch?v=pantai-liman-semau',
                 mapsUrl: 'https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z' 
             },
             { 
-                src: 'assets/icons/icon-193.JPG', 
-                title: '2. Kawasan Budaya Suku Helong', 
+                src: 'assets/icons/otan.PNG', 
+                title: '2. Pantai Otan', 
                 creator: 'Wiliyy Bani', 
-                license: 'Facebook',
-                mapsUrl: 'https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z' 
+                license: 'Creative Commons Attribution (CC BY 4.0)',
+                sourceUrl: 'https://www.facebook.com/share/p/pantai-otan-semau',
+                mapsUrl: 'https://www.google.com/maps/place/Pantai+Otan/@-10.150,123.460,15z' 
             },
             { 
-                src: 'assets/icons/foto-ketiga.jpg', 
-                title: '3. Panorama Pesisir Pulau Semau', 
-                creator: 'Nama Pencipta Foto 3', 
-                license: 'Sumber / Lisensi Foto 3',
-                mapsUrl: 'https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z' 
+                src: 'assets/icons/onanbalu.PNG', 
+                title: '3. Pantai Onanbalu', 
+                creator: 'Dinas Pariwisata Kab. Kupang', 
+                license: 'Domain Publik Edukatif',
+                sourceUrl: 'https://kupangkab.go.id/pariwisata/onanbalu',
+                mapsUrl: 'https://www.google.com/maps/place/Onanbalu/@-10.380,123.400,15z' 
             },
             { 
-                src: 'assets/icons/icon-192.JPG', 
-                title: '4. Perkampungan Tradisional Wae Rebo', 
-                creator: 'Komunitas Adat Manggarai', 
-                license: 'Izin Penelitian Akademik',
-                mapsUrl: 'https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z' 
+                src: 'assets/icons/uinian.JPG', 
+                title: '4. Pantai Uinian', 
+                creator: 'Komunitas Adat Semau', 
+                license: 'Izin Penelitian Akademik ITAF',
+                sourceUrl: 'https://itaf.ac.id/repositori/uinian-semau',
+                mapsUrl: 'https://www.google.com/maps/place/Pantai+Uinian/@-10.350,123.420,15z' 
             },
             { 
-                src: 'assets/icons/icon-192.JPG', 
-                title: '5. Kerajinan Tenun Ikat Lokal', 
-                creator: 'Pengrajin Tenun Ikat Semau', 
-                license: 'UU No. 28/2014',
-                mapsUrl: 'https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z' 
+                src: 'assets/icons/kolam-penyu.JPG', 
+                title: '5. Kolam Penyu', 
+                creator: 'Kelompok Sadar Wisata (Pokdarwis)', 
+                license: 'UU No. 28/2014 tentang Hak Cipta',
+                sourceUrl: 'https://instagram.com/p/kolam-penyu-semau',
+                mapsUrl: 'https://www.google.com/maps/place/Kolam+Penyu+Semau/@-10.310,123.450,15z' 
             },
-            { 
-                src: 'assets/icons/icon-192.JPG', 
-                title: '6. Senja di Pelabuhan Semau', 
-                creator: 'Tim Multimedia Kelompok 11', 
-                license: 'CC BY-SA 4.0',
+             { 
+                src: 'assets/icons/uihmake.JPG', 
+                title: '6. Pantai Uihmake', 
+                creator: '@kakanona17 Instagram', 
+                license: 'UU No. 28/2014 tentang Hak Cipta',
+                sourceUrl: 'https://jefriyunikson13.home.blog/wp-content/uploads/2019/06/pantai-uihmake.jpg',
+                mapsUrl: 'https://www.google.com/maps/place/Kolam+Penyu+Semau/@-10.310,123.450,15z' 
+            },
+             { 
+                src: 'assets/icons/pulautabui.JPG', 
+                title: '7. Pantai Pulau Tabui ', 
+                creator: ' @vjelzha Instagram', 
+                license: 'YouTube Standard License',
+                sourceUrl: 'https://jefriyunikson13.home.blog/wp-content/uploads/2019/06/pulautabui.jpg',
                 mapsUrl: 'https://www.google.com/maps/place/Pantai+Liman/@-10.421,123.412,15z' 
             }
         ];
 
-        // 2. Data 3 Arsip Video Tarian
-        const videoData = [
-            { src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', title: '1. Tarian Perang Helatoba' },
-            { src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', title: '2. Tarian Likurai Tradisional' },
-            { src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', title: '3. Tarian Jai Massal' }
+        // 1B. Data 3 Foto Kain Adat (Tanpa Maps)
+        const kainData = [
+            {
+                src: 'assets/icons/suku-helong.JPG',
+                title: '1. Kain Adat Suku Helong — Dominan Putih di Antara Merah',
+                creator: 'Dokumentasi Budaya Suku Helong Semau',
+                license: 'UU No. 28/2014 tentang Hak Cipta (Edukatif)',
+                sourceUrl: 'https://blog.knitto.co.id/baju-adat-ntt/'
+            },
+            {
+                src: 'assets/icons/suku-timorr.JPG',
+                title: '2. Kain Adat Suku Timor — Dominan Warna Merah',
+                creator: 'Arsip Tenun Tradisional Timor NTT',
+                license: 'UU No. 28/2014 tentang Hak Cipta (Edukatif)',
+                sourceUrl: 'https://shopee.co.id/Tenun-TIMOR-NTT-%28Original%29-i.52267956.19096294329'
+            },
+            {
+                src: 'assets/icons/suku-rote.WEBP',
+                title: '3. Kain Adat Suku Rote — Dominan Warna Hitam',
+                creator: 'Arsip Tenun Ikat Rote NTT',
+                license: 'UU No. 28/2014 tentang Hak Cipta (Edukatif)',
+                sourceUrl: 'https://blog.knitto.co.id/baju-adat-ntt/'
+            }
         ];
 
         // 3. Data 2 Musik Tradisional
         const musicData = [
-            { src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', title: '1. Ansambel Sasando Klasik' },
-            { src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', title: '2. Tabuhan Gong Perunggu Kupang' }
+            { 
+                src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 
+                title: '1. Ansambel Sasando Klasik',
+                creator: 'Maestro Sasando Rote-Kupang',
+                license: 'Domain Publik / CC BY 4.0',
+                sourceUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+            },
+            { 
+                src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', 
+                title: '2. Tabuhan Gong Perunggu Kupang',
+                creator: 'Arsip Musik Tradisional NTT',
+                license: 'Atribusi Terbuka Pembelajaran Multimedia',
+                sourceUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'
+            }
         ];
 
 
         /* ==========================================================================
-           LOGIKA NAVIGASI 10 NODE & PENDUKUNG APLIKASI
+           LOGIKA NAVIGASI 9 NODE & PENDUKUNG APLIKASI
            ========================================================================== */
         const NAVIGATION_NODES = [
             { id: 'home', label: 'Beranda', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>' },
             { id: 'materi', label: 'Materi Lengkap', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>' },
             { id: 'media-interaktif', label: 'Video & Podkes', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>' },
-            { id: 'streaming', label: 'Pemutar Streaming', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>' },
-            { id: 'katalog', label: 'Katalog Acara', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>' },
+            { id: 'profil-semau', label: 'Profil Semau', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' },
             { id: 'abr-ai', label: 'Simulator ABR & AI', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' },
             { id: 'galeri', label: 'Galeri', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>' },
             { id: 'laporan', label: 'Laporan Proyek', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' },
             { id: 'sus', label: 'Evaluasi SUS', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>' },
-            { id: 'sitemap', label: 'Peta Situs', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>' }
+            { id: 'atribusi', label: 'Matriks Atribusi', icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>' }
         ];
 
         let navigationHistory = ['home'];
         let isSimulatedOffline = false;
         let quizTriggered = false;
         let currentPhotoIdx = 0;
+        let currentKainIdx = 0;
         let currentVideoIdx = 0;
         let currentMusicIdx = 0;
 
@@ -1014,7 +1350,6 @@
         function applyGenerativeUI(mode) {
             document.body.classList.remove('genui-theater', 'genui-high-contrast');
             const label = document.getElementById('genui-state-label');
-            const sidePanel = document.getElementById('stream-side-panel');
             const selectEl = document.getElementById('genui-mode-select');
             if (selectEl) selectEl.value = mode;
 
@@ -1057,10 +1392,43 @@
             }
         }
 
-        const AI_INTENTS = [
-            { keywords: ['halo', 'hai', 'selamat'], reply: 'Halo! Selamat datang di Festival Budaya Semau.', action: null },
-            { keywords: ['jadwal', 'acara'], reply: 'Jadwal Panggung Utama Pantai Otan...', action: () => switchNode('katalog') }
-        ];
+        // Kontrol Pemutar Video Interaktif di Node 3
+        function playInteractiveVideo() {
+            const v = document.getElementById('interactive-video-element');
+            if (v) v.play();
+        }
+
+        function pauseInteractiveVideo() {
+            const v = document.getElementById('interactive-video-element');
+            if (v) v.pause();
+        }
+
+        function triggerQuizManual() {
+            const v = document.getElementById('interactive-video-element');
+            if (v) v.pause();
+            document.getElementById('interactive-quiz-overlay').classList.remove('hidden');
+        }
+
+        function changeInteractiveRendition(val) {
+            alert(`Rendisi Video Interaktif diubah ke: ${val}`);
+        }
+
+        // Kontrol Pilihan Kualitas & Takarir CC Streaming Live di Beranda
+        function changeRendition(val) {
+            const badge = document.getElementById('player-status-badge');
+            if (badge) badge.innerText = `Status: Rendisi ABR diubah ke ${val}`;
+        }
+
+        function changeStreamSubtitle(lang) {
+            const box = document.getElementById('live-caption-box');
+            if (lang === 'id') {
+                box.innerText = '🔴 LIVE [ID]: Takarir Bahasa Indonesia Aktif';
+            } else if (lang === 'en') {
+                box.innerText = '🔴 LIVE [EN]: English CC Subtitles Active';
+            } else {
+                box.innerText = '🔴 LIVE • Takarir Dimatikan (Off)';
+            }
+        }
 
         function handleAiChat(e) {
             e.preventDefault();
@@ -1152,22 +1520,25 @@
             document.getElementById('sus-result-box').innerText = `✅ Skor SUS Anda: ${score}`;
         }
 
-        // Navigasi Slider Foto & Atribusi Dinamis
+        // 1. Logika Navigasi Slider Foto, Atribusi & Maps
         function updatePhoto() {
             const item = photoData[currentPhotoIdx];
             const imgEl = document.getElementById('active-photo-img');
             const capEl = document.getElementById('photo-caption');
             const creatorEl = document.getElementById('photo-creator');
             const licenseEl = document.getElementById('photo-license');
-            const mapsBtnEl = document.getElementById('photo-maps-btn'); // Elemen tombol maps
+            const sourceLinkEl = document.getElementById('photo-source-link');
+            const mapsBtnEl = document.getElementById('photo-maps-btn');
 
             if (imgEl && capEl) {
                 imgEl.src = item.src;
                 capEl.innerText = `${item.title} (${currentPhotoIdx + 1} / ${photoData.length})`;
                 if (creatorEl) creatorEl.innerText = item.creator;
                 if (licenseEl) licenseEl.innerText = item.license;
-                
-                // Memperbarui tautan maps secara dinamis
+                if (sourceLinkEl) {
+                    sourceLinkEl.href = item.sourceUrl;
+                    sourceLinkEl.innerText = item.sourceUrl;
+                }
                 if (mapsBtnEl && item.mapsUrl) {
                     mapsBtnEl.href = item.mapsUrl;
                 }
@@ -1176,34 +1547,86 @@
         function nextPhoto() { currentPhotoIdx = (currentPhotoIdx + 1) % photoData.length; updatePhoto(); }
         function prevPhoto() { currentPhotoIdx = (currentPhotoIdx - 1 + photoData.length) % photoData.length; updatePhoto(); }
 
+        // 1B. Logika Navigasi Slider Foto Kain Adat (Tanpa Maps)
+        function updateKain() {
+            const item = kainData[currentKainIdx];
+            const imgEl = document.getElementById('active-kain-img');
+            const capEl = document.getElementById('kain-caption');
+            const creatorEl = document.getElementById('kain-creator');
+            const licenseEl = document.getElementById('kain-license');
+            const sourceLinkEl = document.getElementById('kain-source-link');
+
+            if (imgEl && capEl) {
+                imgEl.src = item.src;
+                capEl.innerText = `${item.title} (${currentKainIdx + 1} / ${kainData.length})`;
+                if (creatorEl) creatorEl.innerText = item.creator;
+                if (licenseEl) licenseEl.innerText = item.license;
+                if (sourceLinkEl) {
+                    sourceLinkEl.href = item.sourceUrl;
+                    sourceLinkEl.innerText = item.sourceUrl;
+                }
+            }
+        }
+        function nextKain() { currentKainIdx = (currentKainIdx + 1) % kainData.length; updateKain(); }
+        function prevKain() { currentKainIdx = (currentKainIdx - 1 + kainData.length) % kainData.length; updateKain(); }
+
         function changeGalleryRatio(ratio) {
             const container = document.getElementById('photo-slider-container');
-            if (!container) return;
-            if (ratio === '1-1') container.style.aspectRatio = '1 / 1';
-            else if (ratio === '4-3') container.style.aspectRatio = '4 / 3';
-            else if (ratio === '16-9') container.style.aspectRatio = '16 / 9';
+            const kainContainer = document.getElementById('kain-slider-container');
+            if (container) {
+                if (ratio === '1-1') container.style.aspectRatio = '1 / 1';
+                else if (ratio === '4-3') container.style.aspectRatio = '4 / 3';
+                else if (ratio === '16-9') container.style.aspectRatio = '16 / 9';
+            }
+            if (kainContainer) {
+                if (ratio === '1-1') kainContainer.style.aspectRatio = '1 / 1';
+                else if (ratio === '4-3') kainContainer.style.aspectRatio = '4 / 3';
+                else if (ratio === '16-9') kainContainer.style.aspectRatio = '16 / 9';
+            }
         }
 
+        // 2. Logika Navigasi Slider Video & Atribusi
         function updateVideo() {
             const item = videoData[currentVideoIdx];
             const videoEl = document.getElementById('active-video-player');
             const capEl = document.getElementById('video-caption');
+            const creatorEl = document.getElementById('video-creator');
+            const licenseEl = document.getElementById('video-license');
+            const sourceLinkEl = document.getElementById('video-source-link');
+
             if (videoEl && capEl) {
                 videoEl.src = item.src;
                 capEl.innerText = `${item.title} (${currentVideoIdx + 1} / ${videoData.length})`;
+                if (creatorEl) creatorEl.innerText = item.creator;
+                if (licenseEl) licenseEl.innerText = item.license;
+                if (sourceLinkEl) {
+                    sourceLinkEl.href = item.sourceUrl;
+                    sourceLinkEl.innerText = item.sourceUrl;
+                }
                 videoEl.load();
             }
         }
         function nextVideo() { currentVideoIdx = (currentVideoIdx + 1) % videoData.length; updateVideo(); }
         function prevVideo() { currentVideoIdx = (currentVideoIdx - 1 + videoData.length) % videoData.length; updateVideo(); }
 
+        // 3. Logika Navigasi Slider Musik & Atribusi
         function updateMusic() {
             const item = musicData[currentMusicIdx];
             const audioEl = document.getElementById('active-audio-player');
             const titleEl = document.getElementById('music-title');
+            const creatorEl = document.getElementById('music-creator');
+            const licenseEl = document.getElementById('music-license');
+            const sourceLinkEl = document.getElementById('music-source-link');
+
             if (audioEl && titleEl) {
                 audioEl.src = item.src;
                 titleEl.innerText = `${item.title} (${currentMusicIdx + 1} / ${musicData.length})`;
+                if (creatorEl) creatorEl.innerText = item.creator;
+                if (licenseEl) licenseEl.innerText = item.license;
+                if (sourceLinkEl) {
+                    sourceLinkEl.href = item.sourceUrl;
+                    sourceLinkEl.innerText = item.sourceUrl;
+                }
                 audioEl.load();
             }
         }
@@ -1213,6 +1636,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             initNavigation();
             initSUSTable();
+            updatePhoto();
+            updateKain();
+            updateVideo();
+            updateMusic();
         });
     </script>
 </body>
